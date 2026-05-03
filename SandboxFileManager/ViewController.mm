@@ -262,6 +262,9 @@ static NSString * const kCellIdentifier = @"DemoCell";
     NSLog(@"========== 文件管理器关闭 ==========");
     NSLog(@"当前目录: %@", currentDirPath);
     NSLog(@"选中文件数量: %lu", (unsigned long)selectedFiles.count);
+    NSString *lastFolderName = currentDirPath.lastPathComponent;
+    NSLog(@"当前末尾目录: %@", lastFolderName);
+    
     for (FileModel *model in selectedFiles) {
         NSLog(@"  - %@ (%@)", model.fileName, model.filePath);
     }

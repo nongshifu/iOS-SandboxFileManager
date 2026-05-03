@@ -968,7 +968,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
 // 搜索控制器消失后调用
 - (void)didDismissSearchController:(UISearchController *)searchController {
     // 隐藏搜索范围选项卡
-    self.navigationItem.rightBarButtonItems = @[self.createButton];
+    self.navigationItem.rightBarButtonItems = @[self.closeButton];
 }
 
 // 长按手势处理，进入批量编辑模式
