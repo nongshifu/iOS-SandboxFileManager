@@ -9,19 +9,19 @@
 /* Begin PBXBuildFile section */
 		60743A8C2FA74279007B4BF4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A8B2FA74279007B4BF4 /* AppDelegate.m */; };
 		60743A8F2FA74279007B4BF4 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A8E2FA74279007B4BF4 /* SceneDelegate.m */; };
-		60743A922FA74279007B4BF4 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 60743A912FA74279007B4BF4 /* ViewController.mm */; };
+		60743A922FA74279007B4BF4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A912FA74279007B4BF4 /* ViewController.m */; };
 		60743A952FA74279007B4BF4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60743A932FA74279007B4BF4 /* Main.storyboard */; };
 		60743A972FA7427B007B4BF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60743A962FA7427B007B4BF4 /* Assets.xcassets */; };
 		60743A9A2FA7427B007B4BF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60743A982FA7427B007B4BF4 /* LaunchScreen.storyboard */; };
 		60743A9D2FA7427B007B4BF4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A9C2FA7427B007B4BF4 /* main.m */; };
 		60743AD82FA742AC007B4BF4 /* SandboxTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AC12FA742AB007B4BF4 /* SandboxTool.m */; };
-		60743AD92FA742AC007B4BF4 /* FileOperateTool.mm in Sources */ = {isa = PBXBuildFile; fileRef = 60743AC22FA742AB007B4BF4 /* FileOperateTool.mm */; };
+		60743AD92FA742AC007B4BF4 /* FileOperateTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AC22FA742AB007B4BF4 /* FileOperateTool.m */; };
 		60743ADA2FA742AC007B4BF4 /* FileNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AC92FA742AB007B4BF4 /* FileNotification.m */; };
-		60743ADB2FA742AC007B4BF4 /* FileListCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 60743ACD2FA742AB007B4BF4 /* FileListCell.mm */; };
+		60743ADB2FA742AC007B4BF4 /* FileListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743ACD2FA742AB007B4BF4 /* FileListCell.m */; };
 		60743ADC2FA742AC007B4BF4 /* FileModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AD02FA742AB007B4BF4 /* FileModel.m */; };
 		60743ADD2FA742AC007B4BF4 /* FavoriteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AD42FA742AC007B4BF4 /* FavoriteManager.m */; };
-		60743ADE2FA742AC007B4BF4 /* FileListViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 60743AD62FA742AC007B4BF4 /* FileListViewController.mm */; };
-		60743AE12FA765E7007B4BF4 /* FileActionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 60743AE02FA765E7007B4BF4 /* FileActionHandler.mm */; };
+		60743ADE2FA742AC007B4BF4 /* FileListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AD62FA742AC007B4BF4 /* FileListViewController.m */; };
+		60743AE12FA765E7007B4BF4 /* FileActionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743AE02FA765E7007B4BF4 /* FileActionHandler.m */; };
 		60743AE42FA76627007B4BF4 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60743AE32FA76627007B4BF4 /* MobileCoreServices.framework */; };
 		60743AE72FA7662D007B4BF4 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60743AE52FA7662D007B4BF4 /* AVFoundation.framework */; };
 		60743AE82FA7662D007B4BF4 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60743AE62FA7662D007B4BF4 /* AVFAudio.framework */; };
@@ -36,6 +36,20 @@
 		60743C442FA7D86D007B4BF4 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 60743C382FA7D86D007B4BF4 /* ioapi.c */; };
 		60743C452FA7D86D007B4BF4 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 60743C392FA7D86D007B4BF4 /* mztools.c */; };
 		60743C462FA7D86D007B4BF4 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743C412FA7D86D007B4BF4 /* SSZipArchive.m */; };
+		60CFF6D82FB614E2004CBF4B /* RemarkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF6D62FB614E2004CBF4B /* RemarkManager.m */; };
+		60CFF6DB2FB61754004CBF4B /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6D92FB61754004CBF4B /* PhotosUI.framework */; };
+		60CFF6DC2FB61754004CBF4B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6DA2FB61754004CBF4B /* Photos.framework */; };
+		60CFF6DF2FB61DCE004CBF4B /* FavoriteListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF6DE2FB61DCE004CBF4B /* FavoriteListViewController.m */; };
+		60CFF6E22FB6308F004CBF4B /* FilePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF6E02FB6308F004CBF4B /* FilePreviewViewController.m */; };
+		60CFF6E52FB630A9004CBF4B /* QuickLookThumbnailing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6E32FB630A9004CBF4B /* QuickLookThumbnailing.framework */; };
+		60CFF6E62FB630A9004CBF4B /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6E42FB630A9004CBF4B /* QuickLook.framework */; };
+		60CFF6EA2FB630E8004CBF4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6E92FB630E8004CBF4B /* QuartzCore.framework */; };
+		60CFF71A2FB6549F004CBF4B /* PlistEditorVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF70C2FB6549F004CBF4B /* PlistEditorVC.m */; };
+		60CFF71B2FB6549F004CBF4B /* PlistNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF70D2FB6549F004CBF4B /* PlistNode.m */; };
+		60CFF71C2FB6549F004CBF4B /* PlistEditDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF70E2FB6549F004CBF4B /* PlistEditDetailVC.m */; };
+		60CFF71E2FB6549F004CBF4B /* PlistEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7132FB6549F004CBF4B /* PlistEditorViewController.m */; };
+		60CFF7202FB6549F004CBF4B /* ItemEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7172FB6549F004CBF4B /* ItemEditorViewController.m */; };
+		60CFF7232FB662FE004CBF4B /* NestedEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7222FB662FE004CBF4B /* NestedEditorViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,30 +59,30 @@
 		60743A8D2FA74279007B4BF4 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		60743A8E2FA74279007B4BF4 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		60743A902FA74279007B4BF4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		60743A912FA74279007B4BF4 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
+		60743A912FA74279007B4BF4 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		60743A942FA74279007B4BF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		60743A962FA7427B007B4BF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60743A992FA7427B007B4BF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		60743A9B2FA7427B007B4BF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60743A9C2FA7427B007B4BF4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		60743AC12FA742AB007B4BF4 /* SandboxTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SandboxTool.m; sourceTree = "<group>"; };
-		60743AC22FA742AB007B4BF4 /* FileOperateTool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileOperateTool.mm; sourceTree = "<group>"; };
+		60743AC22FA742AB007B4BF4 /* FileOperateTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOperateTool.m; sourceTree = "<group>"; };
 		60743AC32FA742AB007B4BF4 /* FileOperateTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperateTool.h; sourceTree = "<group>"; };
 		60743AC42FA742AB007B4BF4 /* SandboxTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SandboxTool.h; sourceTree = "<group>"; };
 		60743AC62FA742AB007B4BF4 /* FileEnum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileEnum.h; sourceTree = "<group>"; };
 		60743AC82FA742AB007B4BF4 /* FileNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNotification.h; sourceTree = "<group>"; };
 		60743AC92FA742AB007B4BF4 /* FileNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileNotification.m; sourceTree = "<group>"; };
 		60743ACB2FA742AB007B4BF4 /* FileManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileManagerDelegate.h; sourceTree = "<group>"; };
-		60743ACD2FA742AB007B4BF4 /* FileListCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileListCell.mm; sourceTree = "<group>"; };
+		60743ACD2FA742AB007B4BF4 /* FileListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileListCell.m; sourceTree = "<group>"; };
 		60743ACE2FA742AB007B4BF4 /* FileListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileListCell.h; sourceTree = "<group>"; };
 		60743AD02FA742AB007B4BF4 /* FileModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileModel.m; sourceTree = "<group>"; };
 		60743AD12FA742AB007B4BF4 /* FileModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileModel.h; sourceTree = "<group>"; };
 		60743AD32FA742AC007B4BF4 /* FavoriteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteManager.h; sourceTree = "<group>"; };
 		60743AD42FA742AC007B4BF4 /* FavoriteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteManager.m; sourceTree = "<group>"; };
-		60743AD62FA742AC007B4BF4 /* FileListViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileListViewController.mm; sourceTree = "<group>"; };
+		60743AD62FA742AC007B4BF4 /* FileListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileListViewController.m; sourceTree = "<group>"; };
 		60743AD72FA742AC007B4BF4 /* FileListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileListViewController.h; sourceTree = "<group>"; };
 		60743ADF2FA765E7007B4BF4 /* FileActionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileActionHandler.h; sourceTree = "<group>"; };
-		60743AE02FA765E7007B4BF4 /* FileActionHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FileActionHandler.mm; sourceTree = "<group>"; };
+		60743AE02FA765E7007B4BF4 /* FileActionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileActionHandler.m; sourceTree = "<group>"; };
 		60743AE32FA76627007B4BF4 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		60743AE52FA7662D007B4BF4 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		60743AE62FA7662D007B4BF4 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = System/Library/Frameworks/AVFAudio.framework; sourceTree = SDKROOT; };
@@ -90,6 +104,30 @@
 		60743C3F2FA7D86D007B4BF4 /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
 		60743C402FA7D86D007B4BF4 /* UNZip-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UNZip-Prefix.pch"; sourceTree = "<group>"; };
 		60743C412FA7D86D007B4BF4 /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
+		60CFF6D62FB614E2004CBF4B /* RemarkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemarkManager.m; sourceTree = "<group>"; };
+		60CFF6D72FB614E2004CBF4B /* RemarkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemarkManager.h; sourceTree = "<group>"; };
+		60CFF6D92FB61754004CBF4B /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		60CFF6DA2FB61754004CBF4B /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		60CFF6DD2FB61DCE004CBF4B /* FavoriteListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteListViewController.h; sourceTree = "<group>"; };
+		60CFF6DE2FB61DCE004CBF4B /* FavoriteListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteListViewController.m; sourceTree = "<group>"; };
+		60CFF6E02FB6308F004CBF4B /* FilePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilePreviewViewController.m; sourceTree = "<group>"; };
+		60CFF6E12FB6308F004CBF4B /* FilePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePreviewViewController.h; sourceTree = "<group>"; };
+		60CFF6E32FB630A9004CBF4B /* QuickLookThumbnailing.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLookThumbnailing.framework; path = System/Library/Frameworks/QuickLookThumbnailing.framework; sourceTree = SDKROOT; };
+		60CFF6E42FB630A9004CBF4B /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
+		60CFF6E72FB630C8004CBF4B /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		60CFF6E92FB630E8004CBF4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		60CFF70B2FB6549F004CBF4B /* PlistEditDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistEditDetailVC.h; sourceTree = "<group>"; };
+		60CFF70C2FB6549F004CBF4B /* PlistEditorVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlistEditorVC.m; sourceTree = "<group>"; };
+		60CFF70D2FB6549F004CBF4B /* PlistNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlistNode.m; sourceTree = "<group>"; };
+		60CFF70E2FB6549F004CBF4B /* PlistEditDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlistEditDetailVC.m; sourceTree = "<group>"; };
+		60CFF70F2FB6549F004CBF4B /* PlistNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistNode.h; sourceTree = "<group>"; };
+		60CFF7102FB6549F004CBF4B /* PlistEditorVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistEditorVC.h; sourceTree = "<group>"; };
+		60CFF7132FB6549F004CBF4B /* PlistEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlistEditorViewController.m; sourceTree = "<group>"; };
+		60CFF7142FB6549F004CBF4B /* ItemEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemEditorViewController.h; sourceTree = "<group>"; };
+		60CFF7172FB6549F004CBF4B /* ItemEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemEditorViewController.m; sourceTree = "<group>"; };
+		60CFF7182FB6549F004CBF4B /* PlistEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistEditorViewController.h; sourceTree = "<group>"; };
+		60CFF7212FB662FE004CBF4B /* NestedEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NestedEditorViewController.h; sourceTree = "<group>"; };
+		60CFF7222FB662FE004CBF4B /* NestedEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NestedEditorViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,14 +135,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60743AF02FA7672B007B4BF4 /* AVKit.framework in Frameworks */,
+				60CFF6EA2FB630E8004CBF4B /* QuartzCore.framework in Frameworks */,
+				60CFF6E62FB630A9004CBF4B /* QuickLook.framework in Frameworks */,
+				60CFF6E52FB630A9004CBF4B /* QuickLookThumbnailing.framework in Frameworks */,
+				60CFF6DC2FB61754004CBF4B /* Photos.framework in Frameworks */,
+				60CFF6DB2FB61754004CBF4B /* PhotosUI.framework in Frameworks */,
+				60743AEA2FA76635007B4BF4 /* AudioToolbox.framework in Frameworks */,
+				60743AE82FA7662D007B4BF4 /* AVFAudio.framework in Frameworks */,
+				60743AE72FA7662D007B4BF4 /* AVFoundation.framework in Frameworks */,
 				60743B2C2FA771B5007B4BF4 /* libz.1.tbd in Frameworks */,
 				60743AEE2FA76643007B4BF4 /* libz.tbd in Frameworks */,
 				60743AF22FA76751007B4BF4 /* UniformTypeIdentifiers.framework in Frameworks */,
-				60743AF02FA7672B007B4BF4 /* AVKit.framework in Frameworks */,
 				60743AEC2FA7663E007B4BF4 /* SystemConfiguration.framework in Frameworks */,
-				60743AEA2FA76635007B4BF4 /* AudioToolbox.framework in Frameworks */,
-				60743AE72FA7662D007B4BF4 /* AVFoundation.framework in Frameworks */,
-				60743AE82FA7662D007B4BF4 /* AVFAudio.framework in Frameworks */,
 				60743AE42FA76627007B4BF4 /* MobileCoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -147,7 +190,7 @@
 				60743A8D2FA74279007B4BF4 /* SceneDelegate.h */,
 				60743A8E2FA74279007B4BF4 /* SceneDelegate.m */,
 				60743A902FA74279007B4BF4 /* ViewController.h */,
-				60743A912FA74279007B4BF4 /* ViewController.mm */,
+				60743A912FA74279007B4BF4 /* ViewController.m */,
 				60743A932FA74279007B4BF4 /* Main.storyboard */,
 				60743A962FA7427B007B4BF4 /* Assets.xcassets */,
 				60743A982FA7427B007B4BF4 /* LaunchScreen.storyboard */,
@@ -160,10 +203,12 @@
 		60743AC02FA742AB007B4BF4 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				60CFF6D72FB614E2004CBF4B /* RemarkManager.h */,
+				60CFF6D62FB614E2004CBF4B /* RemarkManager.m */,
 				60743ADF2FA765E7007B4BF4 /* FileActionHandler.h */,
-				60743AE02FA765E7007B4BF4 /* FileActionHandler.mm */,
+				60743AE02FA765E7007B4BF4 /* FileActionHandler.m */,
 				60743AC32FA742AB007B4BF4 /* FileOperateTool.h */,
-				60743AC22FA742AB007B4BF4 /* FileOperateTool.mm */,
+				60743AC22FA742AB007B4BF4 /* FileOperateTool.m */,
 				60743AC42FA742AB007B4BF4 /* SandboxTool.h */,
 				60743AC12FA742AB007B4BF4 /* SandboxTool.m */,
 			);
@@ -198,7 +243,7 @@
 		60743ACC2FA742AB007B4BF4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				60743ACD2FA742AB007B4BF4 /* FileListCell.mm */,
+				60743ACD2FA742AB007B4BF4 /* FileListCell.m */,
 				60743ACE2FA742AB007B4BF4 /* FileListCell.h */,
 			);
 			path = Views;
@@ -225,7 +270,13 @@
 		60743AD52FA742AC007B4BF4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				60743AD62FA742AC007B4BF4 /* FileListViewController.mm */,
+				60CFF70A2FB6549F004CBF4B /* NewPlistEditVC */,
+				60CFF7112FB6549F004CBF4B /* plist */,
+				60CFF6E12FB6308F004CBF4B /* FilePreviewViewController.h */,
+				60CFF6E02FB6308F004CBF4B /* FilePreviewViewController.m */,
+				60CFF6DD2FB61DCE004CBF4B /* FavoriteListViewController.h */,
+				60CFF6DE2FB61DCE004CBF4B /* FavoriteListViewController.m */,
+				60743AD62FA742AC007B4BF4 /* FileListViewController.m */,
 				60743AD72FA742AC007B4BF4 /* FileListViewController.h */,
 			);
 			path = Controllers;
@@ -234,6 +285,12 @@
 		60743AE22FA76627007B4BF4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				60CFF6E92FB630E8004CBF4B /* QuartzCore.framework */,
+				60CFF6E72FB630C8004CBF4B /* AudioUnit.framework */,
+				60CFF6E42FB630A9004CBF4B /* QuickLook.framework */,
+				60CFF6E32FB630A9004CBF4B /* QuickLookThumbnailing.framework */,
+				60CFF6DA2FB61754004CBF4B /* Photos.framework */,
+				60CFF6D92FB61754004CBF4B /* PhotosUI.framework */,
 				60743B2B2FA771B5007B4BF4 /* libz.1.tbd */,
 				60743AF12FA76751007B4BF4 /* UniformTypeIdentifiers.framework */,
 				60743AEF2FA7672B007B4BF4 /* AVKit.framework */,
@@ -272,6 +329,32 @@
 				60743C3E2FA7D86D007B4BF4 /* ioapi.h */,
 			);
 			path = minizip;
+			sourceTree = "<group>";
+		};
+		60CFF70A2FB6549F004CBF4B /* NewPlistEditVC */ = {
+			isa = PBXGroup;
+			children = (
+				60CFF70B2FB6549F004CBF4B /* PlistEditDetailVC.h */,
+				60CFF70E2FB6549F004CBF4B /* PlistEditDetailVC.m */,
+				60CFF7102FB6549F004CBF4B /* PlistEditorVC.h */,
+				60CFF70C2FB6549F004CBF4B /* PlistEditorVC.m */,
+				60CFF70F2FB6549F004CBF4B /* PlistNode.h */,
+				60CFF70D2FB6549F004CBF4B /* PlistNode.m */,
+			);
+			path = NewPlistEditVC;
+			sourceTree = "<group>";
+		};
+		60CFF7112FB6549F004CBF4B /* plist */ = {
+			isa = PBXGroup;
+			children = (
+				60CFF7212FB662FE004CBF4B /* NestedEditorViewController.h */,
+				60CFF7222FB662FE004CBF4B /* NestedEditorViewController.m */,
+				60CFF7142FB6549F004CBF4B /* ItemEditorViewController.h */,
+				60CFF7172FB6549F004CBF4B /* ItemEditorViewController.m */,
+				60CFF7182FB6549F004CBF4B /* PlistEditorViewController.h */,
+				60CFF7132FB6549F004CBF4B /* PlistEditorViewController.m */,
+			);
+			path = plist;
 			sourceTree = "<group>";
 		};
 		F1D82E0C0E7CCFDA465AD38D /* Pods */ = {
@@ -352,21 +435,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				60743ADC2FA742AC007B4BF4 /* FileModel.m in Sources */,
-				60743AD92FA742AC007B4BF4 /* FileOperateTool.mm in Sources */,
+				60743AD92FA742AC007B4BF4 /* FileOperateTool.m in Sources */,
 				60743C452FA7D86D007B4BF4 /* mztools.c in Sources */,
 				60743C462FA7D86D007B4BF4 /* SSZipArchive.m in Sources */,
-				60743AE12FA765E7007B4BF4 /* FileActionHandler.mm in Sources */,
-				60743ADE2FA742AC007B4BF4 /* FileListViewController.mm in Sources */,
+				60743AE12FA765E7007B4BF4 /* FileActionHandler.m in Sources */,
+				60743ADE2FA742AC007B4BF4 /* FileListViewController.m in Sources */,
+				60CFF6DF2FB61DCE004CBF4B /* FavoriteListViewController.m in Sources */,
 				60743C422FA7D86D007B4BF4 /* unzip.c in Sources */,
+				60CFF71B2FB6549F004CBF4B /* PlistNode.m in Sources */,
 				60743ADA2FA742AC007B4BF4 /* FileNotification.m in Sources */,
-				60743A922FA74279007B4BF4 /* ViewController.mm in Sources */,
+				60CFF7232FB662FE004CBF4B /* NestedEditorViewController.m in Sources */,
+				60743A922FA74279007B4BF4 /* ViewController.m in Sources */,
 				60743AD82FA742AC007B4BF4 /* SandboxTool.m in Sources */,
 				60743A8C2FA74279007B4BF4 /* AppDelegate.m in Sources */,
+				60CFF6D82FB614E2004CBF4B /* RemarkManager.m in Sources */,
 				60743C442FA7D86D007B4BF4 /* ioapi.c in Sources */,
-				60743ADB2FA742AC007B4BF4 /* FileListCell.mm in Sources */,
+				60743ADB2FA742AC007B4BF4 /* FileListCell.m in Sources */,
+				60CFF6E22FB6308F004CBF4B /* FilePreviewViewController.m in Sources */,
 				60743A9D2FA7427B007B4BF4 /* main.m in Sources */,
 				60743C432FA7D86D007B4BF4 /* zip.c in Sources */,
+				60CFF71C2FB6549F004CBF4B /* PlistEditDetailVC.m in Sources */,
+				60CFF7202FB6549F004CBF4B /* ItemEditorViewController.m in Sources */,
+				60CFF71E2FB6549F004CBF4B /* PlistEditorViewController.m in Sources */,
 				60743A8F2FA74279007B4BF4 /* SceneDelegate.m in Sources */,
+				60CFF71A2FB6549F004CBF4B /* PlistEditorVC.m in Sources */,
 				60743ADD2FA742AC007B4BF4 /* FavoriteManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

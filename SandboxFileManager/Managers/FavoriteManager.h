@@ -23,6 +23,11 @@
 /// @param model 文件模型
 - (void)addFavorite:(FileModel *)model;
 
+/// 通过路径和备注添加收藏（自动创建FileModel）
+/// @param path 文件路径
+/// @param remark 备注（可为空）
+- (void)addFavoriteWithPath:(NSString *)path remark:(NSString *)remark;
+
 /// 移除收藏
 /// @param model 文件模型
 - (void)removeFavorite:(FileModel *)model;

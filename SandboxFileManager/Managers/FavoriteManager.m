@@ -1,5 +1,6 @@
 #import "FavoriteManager.h"
 #import "FileNotification.h"
+#import "RemarkManager.h"
 
 static NSString * const kFavoriteFilePathsKey = @"FavoriteFilePaths";
 
@@ -40,6 +41,24 @@ static NSString * const kFavoriteFilePathsKey = @"FavoriteFilePaths";
     [self saveFavorites];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFavoriteChanged object:nil];
+}
+
+- (void)addFavoriteWithPath:(NSString *)path remark:(NSString *)remark {
+    if (!path || [self isFavorite:path]) {
+        return;
+    }
+
+    FileModel *model = [FileModel modelWithFilePath:path];
+    if (!model) {
+        return;
+    }
+
+    if (remark.length > 0) {
+        model.remark = remark;
+        [[RemarkManager sharedManager] saveRemark:remark forFilePath:path];
+    }
+
+    [self addFavorite:model];
 }
 
 - (void)removeFavorite:(FileModel *)model {

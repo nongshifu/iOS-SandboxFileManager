@@ -23,6 +23,7 @@ typedef NS_ENUM(NSInteger, FileActionType) {
     FileActionTypeCopyPath,   ///< 复制路径
     FileActionTypeInfo,       ///< 显示详情
     FileActionTypeOpenWith,   ///< 用其他应用打开
+    FileActionTypeEditRemark, ///< 修改备注
 };
 
 #pragma mark - FileActionHandler

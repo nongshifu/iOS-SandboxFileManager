@@ -10,6 +10,7 @@
 #import "FileManagerDelegate.h"
 #import "FileEnum.h"
 #import "FileListCell.h"
+#import "PlistEditorViewController.h"
 
 @class FileModel;
 
@@ -33,6 +34,12 @@
 /// 关闭按钮（导航栏右侧）
 @property (nonatomic, strong) UIBarButtonItem *closeButton;
 
+/// 完成按钮（导航栏右侧）
+@property (nonatomic, strong) UIBarButtonItem *completeButton;
+
+/// 收藏按钮（导航栏右侧）
+@property (nonatomic, strong) UIBarButtonItem *collectionButton;
+
 /// 搜索控制器
 @property (nonatomic, strong) UISearchController *searchController;
 
@@ -44,6 +51,9 @@
 
 /// 路径显示按钮（底部）
 @property (nonatomic, strong) UIButton *pathButton;
+
+/// 统计信息视图（文件夹数量、文件数量、总大小）
+@property (nonatomic, strong) UILabel *statisticsLabel;
 
 /// 筛选按钮（文件夹/全部）
 @property (nonatomic, strong) UIButton *filterButton;
@@ -145,6 +155,10 @@
 - (instancetype)initWithSandboxDirectory:(SandboxDirectoryType)directoryType subPath:(NSString *)subPath;
 
 #pragma mark - 公共方法
+
+/// 导航到指定路径
+/// @param path 目标目录路径
+- (void)navigateToPath:(NSString *)path;
 
 /// 刷新文件列表
 - (void)refreshFileList;

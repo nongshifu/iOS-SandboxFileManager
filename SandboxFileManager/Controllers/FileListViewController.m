@@ -7,6 +7,10 @@
 #import "FileNotification.h"
 #import "FileEnum.h"
 #import "FileActionHandler.h"
+#import "RemarkManager.h"
+#import "FavoriteListViewController.h"
+#import "FilePreviewViewController.h"
+#import "PlistEditorVC.h"
 
 static NSString * const kCellIdentifier = @"FileListCell";
 
@@ -179,9 +183,19 @@ static NSString * const kCellIdentifier = @"FileListCell";
                                                                       target:self
                                                                       action:@selector(createButtonTapped:)];
     
-    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemClose
                                                                      target:self
                                                                      action:@selector(closeButtonTapped:)];
+    
+    self.completeButton = [[UIBarButtonItem alloc] initWithTitle:@"完成"
+                                                           style:UIBarButtonItemStylePlain
+                                                          target:self
+                                                          action:@selector(exitBatchEditMode)];
+    
+    self.collectionButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"star"]
+                                                             style:UIBarButtonItemStylePlain
+                                                            target:self
+                                                            action:@selector(openCollectionListViewController)];
     
     self.pasteButton = [[UIBarButtonItem alloc] initWithTitle:@"粘贴"
                                                         style:UIBarButtonItemStylePlain
@@ -196,7 +210,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
     self.selectionCountButton.enabled = NO;
     
     self.navigationItem.leftBarButtonItems = @[backButton, self.createButton];
-    self.navigationItem.rightBarButtonItems = @[self.closeButton];
+    self.navigationItem.rightBarButtonItems = @[self.closeButton,self.collectionButton];
     self.definesPresentationContext = YES;
 }
 
@@ -210,7 +224,15 @@ static NSString * const kCellIdentifier = @"FileListCell";
     self.pathButton.contentEdgeInsets = UIEdgeInsetsMake(0, 20, 0, 20);
     [self.pathButton addTarget:self action:@selector(pathLabelTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.pathButton];
-    
+
+    // 创建统计信息标签
+    self.statisticsLabel = [[UILabel alloc] init];
+    self.statisticsLabel.font = [UIFont systemFontOfSize:11];
+    self.statisticsLabel.textColor = [UIColor secondaryLabelColor];
+    self.statisticsLabel.textAlignment = NSTextAlignmentCenter;
+    self.statisticsLabel.backgroundColor = [UIColor tertiarySystemBackgroundColor];
+    [self.view addSubview:self.statisticsLabel];
+
     // 创建底部按钮滚动视图
     self.bottomButtonScrollView = [[UIScrollView alloc] init];
     self.bottomButtonScrollView.showsHorizontalScrollIndicator = NO;
@@ -362,6 +384,10 @@ static NSString * const kCellIdentifier = @"FileListCell";
     self.tableView.tableFooterView = [[UIView alloc] init];
     [self.tableView registerClass:[FileListCell class] forCellReuseIdentifier:kCellIdentifier];
     [self.view addSubview:self.tableView];
+
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(handleRefresh:) forControlEvents:UIControlEventValueChanged];
+    self.tableView.refreshControl = refreshControl;
 }
 
 // 设置空视图
@@ -547,6 +573,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
     CGFloat safeTop = self.view.safeAreaInsets.top;
     
     CGFloat sortButtonHeight = 26;
+    CGFloat statisticsHeight = 20;
     CGFloat pathHeight = 26;
     CGFloat toolbarHeight = 50;
     CGFloat bottomSafeHeight = self.view.safeAreaInsets.bottom;
@@ -560,6 +587,11 @@ static NSString * const kCellIdentifier = @"FileListCell";
     // 排列顶部滚动视图内的排序按钮
     [self relayoutScrollViewButtons];
     
+    // 统计信息标签布局（路径标签上方）
+    self.statisticsLabel.frame = CGRectMake(0,
+                                            self.view.bounds.size.height - statisticsHeight - pathHeight - bottomSafeHeight,
+                                            self.view.bounds.size.width, statisticsHeight);
+    
     // 路径标签布局（底部）
     self.pathButton.frame = CGRectMake(horizontalPadding,
                                        self.view.bounds.size.height - pathHeight - bottomSafeHeight,
@@ -568,14 +600,14 @@ static NSString * const kCellIdentifier = @"FileListCell";
     if (self.isBatchEditing) {
         self.tableView.frame = CGRectMake(0, safeTop  + sortButtonHeight,
                                           self.view.bounds.size.width,
-                                          self.view.bounds.size.height - safeTop - sortButtonHeight - pathHeight - toolbarHeight - bottomSafeHeight);
+                                          self.view.bounds.size.height - safeTop - sortButtonHeight - statisticsHeight - pathHeight - toolbarHeight - bottomSafeHeight);
         self.bottomToolbar.frame = CGRectMake(0, self.view.bounds.size.height - toolbarHeight - bottomSafeHeight,
                                               self.view.bounds.size.width, toolbarHeight);
         [self layoutToolbarButtons];
     } else {
         self.tableView.frame = CGRectMake(0, safeTop  + sortButtonHeight,
                                           self.view.bounds.size.width,
-                                          self.view.bounds.size.height - safeTop  - sortButtonHeight - pathHeight - bottomSafeHeight);
+                                          self.view.bounds.size.height - safeTop  - sortButtonHeight - statisticsHeight - pathHeight - bottomSafeHeight);
         self.bottomToolbar.frame = CGRectMake(0, -100, 0, 0);
     }
     
@@ -596,6 +628,21 @@ static NSString * const kCellIdentifier = @"FileListCell";
 }
 
 #pragma mark - Actions
+
+// 打开收藏列表
+- (void)openCollectionListViewController {
+    FavoriteListViewController *favoriteListVC = [[FavoriteListViewController alloc] init];
+    favoriteListVC.sourceFileListVC = self;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:favoriteListVC];
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:navController animated:YES completion:nil];
+}
+
+// 导航到指定路径
+- (void)navigateToPath:(NSString *)path {
+    self.currentDirPath = path;
+    [self refreshFileList];
+}
 
 // 返回按钮点击事件
 - (void)backButtonTapped:(UIBarButtonItem *)sender {
@@ -689,10 +736,10 @@ static NSString * const kCellIdentifier = @"FileListCell";
     
     if (self.searchController.isActive) {
         // 搜索模式下，显示搜索范围选项卡
-        self.navigationItem.rightBarButtonItems = @[self.searchScopeItem, self.closeButton];
+        self.navigationItem.rightBarButtonItems = @[self.closeButton, self.closeButton];
     } else {
         // 非搜索模式下
-        self.navigationItem.rightBarButtonItems = @[self.createButton, self.closeButton];
+        self.navigationItem.rightBarButtonItems = @[self.closeButton, self.collectionButton];
     }
 }
 
@@ -968,7 +1015,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
 // 搜索控制器消失后调用
 - (void)didDismissSearchController:(UISearchController *)searchController {
     // 隐藏搜索范围选项卡
-    self.navigationItem.rightBarButtonItems = @[self.closeButton];
+    self.navigationItem.rightBarButtonItems = @[self.closeButton, self.collectionButton];
 }
 
 // 长按手势处理，进入批量编辑模式
@@ -1020,9 +1067,10 @@ static NSString * const kCellIdentifier = @"FileListCell";
     }
 }
 
+// 进入批处理模式
 - (void)enterBatchEditMode {
     self.isBatchEditing = YES;
-    self.navigationItem.rightBarButtonItems = @[self.closeButton, self.selectionCountButton];
+    self.navigationItem.rightBarButtonItems = @[self.completeButton, self.selectionCountButton];
     self.bottomToolbar.hidden = NO;
     [self updateSelectionCountButton];
     [self.view setNeedsLayout];
@@ -1040,10 +1088,10 @@ static NSString * const kCellIdentifier = @"FileListCell";
     self.isBatchEditing = NO;
     if (self.searchController.isActive) {
         // 搜索模式下，显示搜索范围选项卡
-        self.navigationItem.rightBarButtonItems = @[self.searchScopeItem, self.closeButton];
+        self.navigationItem.rightBarButtonItems = @[self.closeButton, self.searchScopeItem];
     } else {
         // 非搜索模式下
-        self.navigationItem.rightBarButtonItems = @[self.createButton, self.closeButton];
+        self.navigationItem.rightBarButtonItems = @[self.closeButton, self.collectionButton];
     }
     
     self.bottomToolbar.hidden = YES;
@@ -1208,6 +1256,53 @@ static NSString * const kCellIdentifier = @"FileListCell";
 
 #pragma mark - Data
 
+// 更新统计信息
+- (void)updateStatistics {
+    NSInteger folderCount = 0;
+    NSInteger fileCount = 0;
+    unsigned long long totalSize = 0;
+
+    for (FileModel *model in self.fileList) {
+        if (model.itemType == FileItemTypeFolder) {
+            folderCount++;
+        } else {
+            fileCount++;
+            totalSize += model.fileSize;
+        }
+    }
+
+    NSByteCountFormatter *formatter = [[NSByteCountFormatter alloc] init];
+    formatter.countStyle = NSByteCountFormatterCountStyleFile;
+    NSString *sizeStr = [formatter stringFromByteCount:totalSize];
+
+    NSString *statsText = [NSString stringWithFormat:@"📁 %ld 个  📄 %ld 个  💾 %@", (long)folderCount, (long)fileCount, sizeStr];
+
+    BOOL isCurrentDirFavorite = [[FavoriteManager sharedManager] isFavorite:self.currentDirPath];
+    NSString *remark = [[RemarkManager sharedManager] getRemarkForFilePath:self.currentDirPath];
+
+    if (isCurrentDirFavorite || remark.length > 0) {
+        self.statisticsLabel.textColor = [UIColor systemOrangeColor];
+        NSMutableArray *tags = [NSMutableArray array];
+        if (isCurrentDirFavorite) {
+            [tags addObject:@"⭐ 已收藏"];
+        }
+        if (remark.length > 0) {
+            [tags addObject:[NSString stringWithFormat:@"📝 %@", remark]];
+        }
+        statsText = [statsText stringByAppendingFormat:@"  %@", [tags componentsJoinedByString:@"  "]];
+    } else {
+        self.statisticsLabel.textColor = [UIColor secondaryLabelColor];
+    }
+
+    self.statisticsLabel.text = statsText;
+}
+
+// 下拉刷新处理
+- (void)handleRefresh:(UIRefreshControl *)refreshControl {
+    [self refreshFileList];
+    [refreshControl endRefreshing];
+}
+
 // 刷新文件列表
 - (void)refreshFileList {
     if (self.isShowFavoriteList) {
@@ -1224,6 +1319,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
     
     [self sortFileList];
     [self.pathButton setTitle:self.currentDirPath forState:UIControlStateNormal];
+    [self updateStatistics];
     [self.tableView reloadData];
     [self updateEmptyView];
 }
@@ -1366,6 +1462,39 @@ static NSString * const kCellIdentifier = @"FileListCell";
         if ([self.delegate respondsToSelector:@selector(fileManagerDidClickItem:itemName:currentDirPath:)]) {
             [self.delegate fileManagerDidClickItem:model itemName:model.fileName currentDirPath:self.currentDirPath];
         }
+
+        NSString *extension = [model.filePath pathExtension].lowercaseString;
+        if ([extension isEqualToString:@"plist"] || [extension isEqualToString:@"xml"]) {
+            PlistEditorViewController *editorVC = [[PlistEditorViewController alloc] init];
+//            PlistEditorVC *editorVC = [[PlistEditorVC alloc] init];
+            editorVC.fileModel = model;
+            editorVC.filePath = model.filePath;
+            [self.navigationController pushViewController:editorVC animated:YES];
+            return;
+        }
+
+        NSMutableArray *previewList = [NSMutableArray array];
+        NSInteger selectedIndex = 0;
+        for (NSInteger i = 0; i < self.fileList.count; i++) {
+            FileModel *m = self.fileList[i];
+            if (m.itemType != FileItemTypeFolder) {
+                [previewList addObject:m];
+                if (i == (self.searchController.isActive ? [self.searchResults indexOfObject:model] : indexPath.row)) {
+                    selectedIndex = previewList.count - 1;
+                }
+            }
+        }
+
+        if (previewList.count > 0) {
+            FilePreviewViewController *previewVC = [[FilePreviewViewController alloc] init];
+            previewVC.fileList = previewList;
+            previewVC.currentIndex = selectedIndex;
+            previewVC.fromActionButton = NO;
+            previewVC.currentDirPath = self.currentDirPath;
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:previewVC];
+            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self presentViewController:navController animated:YES completion:nil];
+        }
     }
 }
 
@@ -1457,24 +1586,72 @@ static NSString * const kCellIdentifier = @"FileListCell";
 // 切换收藏状态
 - (void)toggleFavoriteForItem:(FileModel *)model {
     if (model.isFavorite) {
-        [[FavoriteManager sharedManager] removeFavorite:model];
+        // ======================
+        // 取消收藏：弹出确认框
+        // ======================
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"取消收藏" message:@"确定要取消收藏该文件吗？" preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            // 执行取消收藏
+            [[FavoriteManager sharedManager] removeFavorite:model];
+            
+            // 刷新逻辑（你原来的代码）
+            if (self.isShowFavoriteList) {
+                self.favoriteFileList = [[[FavoriteManager sharedManager] getAllFavorites] mutableCopy];
+                for (FileModel *m in self.favoriteFileList) {
+                    m.isFavorite = YES;
+                }
+                self.fileList = self.favoriteFileList;
+                [self.tableView reloadData];
+                return;
+            }
+            [self.tableView reloadData];
+        }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
     } else {
-        [[FavoriteManager sharedManager] addFavorite:model];
+        // ======================
+        // 收藏：弹出带备注的输入框
+        // ======================
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"添加收藏" message:@"请输入备注" preferredStyle:UIAlertControllerStyleAlert];
+        
+        // 添加输入框，默认显示当前 remark
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.placeholder = @"请输入备注";
+            textField.text = model.remark; // 默认值
+        }];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            // 获取输入的备注
+            UITextField *textField = alert.textFields.firstObject;
+            NSString *remark = textField.text ?: @"";
+            
+            // 赋值给 model
+            model.remark = remark;
+            
+            // 保存备注到本地
+            [[RemarkManager sharedManager] saveRemark:remark forFilePath:model.filePath];
+            
+            // 执行收藏
+            [[FavoriteManager sharedManager] addFavorite:model];
+            
+            // 刷新逻辑（你原来的代码）
+            if (self.isShowFavoriteList) {
+                self.favoriteFileList = [[[FavoriteManager sharedManager] getAllFavorites] mutableCopy];
+                for (FileModel *m in self.favoriteFileList) {
+                    m.isFavorite = YES;
+                }
+                self.fileList = self.favoriteFileList;
+                [self.tableView reloadData];
+                return;
+            }
+            [self.tableView reloadData];
+        }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
     }
-    
-    // 如果当前在收藏列表中，需要重新加载最新收藏数据
-    if (self.isShowFavoriteList) {
-        self.favoriteFileList = [[[FavoriteManager sharedManager] getAllFavorites] mutableCopy];
-        for (FileModel *m in self.favoriteFileList) {
-            m.isFavorite = YES;
-        }
-        self.fileList = self.favoriteFileList;
-        [self.tableView reloadData];
-        return;
-    }
-    
-    // 刷新整个表格以确保UI正确更新
-    [self.tableView reloadData];
 }
 
 #pragma mark - FileListCellDelegate
@@ -1493,9 +1670,34 @@ static NSString * const kCellIdentifier = @"FileListCell";
 
 // 文件列表单元格点击了操作按钮
 - (void)fileListCell:(FileListCell *)cell didTapActionButtonForFileModel:(FileModel *)model {
-    [[FileActionHandler sharedHandler] showActionSheetForModel:model
-                                            fromViewController:self
-                                                      delegate:nil];
+    if (model.itemType == FileItemTypeFolder) {
+        [[FileActionHandler sharedHandler] showActionSheetForModel:model
+                                                fromViewController:self
+                                                          delegate:nil];
+    } else {
+        NSMutableArray *previewList = [NSMutableArray array];
+        NSInteger selectedIndex = 0;
+        for (NSInteger i = 0; i < self.fileList.count; i++) {
+            FileModel *m = self.fileList[i];
+            if (m.itemType != FileItemTypeFolder) {
+                [previewList addObject:m];
+                if ([m.filePath isEqualToString:model.filePath]) {
+                    selectedIndex = previewList.count - 1;
+                }
+            }
+        }
+
+        if (previewList.count > 0) {
+            FilePreviewViewController *previewVC = [[FilePreviewViewController alloc] init];
+            previewVC.fileList = previewList;
+            previewVC.currentIndex = selectedIndex;
+            previewVC.fromActionButton = YES;
+            previewVC.currentDirPath = self.currentDirPath;
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:previewVC];
+            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self presentViewController:navController animated:YES completion:nil];
+        }
+    }
 }
 
 #pragma mark - FileManagerDelegate
@@ -1514,11 +1716,6 @@ static NSString * const kCellIdentifier = @"FileListCell";
 - (void)fileManagerDidEnterDirectory:(NSString *)directoryPath {
     NSLog(@"Entered directory: %@", directoryPath);
 }
-
-
-
-
-
 
 // 导航到指定目录
 - (void)navigateToDirectory:(NSString *)directoryPath {

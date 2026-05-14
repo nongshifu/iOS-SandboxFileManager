@@ -34,6 +34,12 @@
 /// 文件修改日期
 @property (nonatomic, copy) NSDate *modificationDate;
 
+/// 备注
+@property (nonatomic, copy) NSString *remark;
+
+/// 拓展
+@property (nonatomic, strong) NSObject * expand;
+
 #pragma mark - 状态标记
 
 /// 是否已收藏

@@ -1,4 +1,5 @@
 #import "FileModel.h"
+#import "RemarkManager.h"
 
 @implementation FileModel
 
@@ -25,13 +26,16 @@
     model.parentDirPath = [filePath stringByDeletingLastPathComponent];
     model.isFavorite = NO;
     model.isSelected = NO;
+    
+    // 从本地加载备注
+    model.remark = [[RemarkManager sharedManager] getRemarkForFilePath:filePath];
 
     return model;
 }
 
 - (NSString *)formattedFileSize {
     if (self.itemType == FileItemTypeFolder) {
-        return @"--";
+        return @"文件夹";
     }
 
     unsigned long long bytes = self.fileSize;

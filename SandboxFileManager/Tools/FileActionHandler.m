@@ -2,6 +2,7 @@
 #import "FileModel.h"
 #import "FileNotification.h"
 #import "FileListViewController.h"
+#import "RemarkManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
@@ -75,6 +76,7 @@
     NSMutableArray *actions = [NSMutableArray array];
 
     [actions addObject:@(FileActionTypeInfo)];
+    
 
     NSString *extension = model.filePath.pathExtension.lowercaseString;
 
@@ -100,7 +102,7 @@
         [actions addObject:@(FileActionTypeRename)];
         [actions addObject:@(FileActionTypeDelete)];
     }
-
+    [actions addObject:@(FileActionTypeEditRemark)];
     return actions;
 }
 
@@ -115,6 +117,8 @@
         case FileActionTypeCopyPath: return @"复制路径";
         case FileActionTypeInfo: return @"详情";
         case FileActionTypeOpenWith: return @"用其他应用打开";
+        case FileActionTypeEditRemark: return @"修改备注";
+            
         default: return @"未知";
     }
 }
@@ -126,6 +130,7 @@
         case FileActionTypeUnzip: return [UIImage systemImageNamed:@"archivebox"];
         case FileActionTypeZip: return [UIImage systemImageNamed:@"folder.badge.plus"];
         case FileActionTypeRename: return [UIImage systemImageNamed:@"pencil"];
+        case FileActionTypeEditRemark: return [UIImage systemImageNamed:@"pencil"];
         case FileActionTypeDelete: return [UIImage systemImageNamed:@"trash"];
         case FileActionTypeCopyPath: return [UIImage systemImageNamed:@"doc.on.doc"];
         case FileActionTypeInfo: return [UIImage systemImageNamed:@"info.circle"];
@@ -168,6 +173,9 @@
             break;
         case FileActionTypeOpenWith:
             [self openWithFiles:models fromViewController:viewController];
+            break;
+        case FileActionTypeEditRemark:
+            [self editRemarkWithFiles:models.firstObject fromViewController:viewController];
             break;
         default:
             break;
@@ -381,6 +389,8 @@
 
             if (error) {
                 [self showAlertWithTitle:@"重命名失败" message:error.localizedDescription fromViewController:viewController];
+            } else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
             }
         }
     }]];
@@ -482,6 +492,35 @@
     [self.documentController presentOpenInMenuFromRect:viewController.view.bounds
                                                 inView:viewController.view
                                               animated:YES];
+}
+
+- (void)editRemarkWithFiles:(FileModel *)model fromViewController:(UIViewController *)viewController {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"修改备注" message:@"请输入备注" preferredStyle:UIAlertControllerStyleAlert];
+    
+    // 添加输入框，默认显示当前 remark
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"请输入备注";
+        textField.text = model.remark; // 默认值
+    }];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        // 获取输入的备注
+        UITextField *textField = alert.textFields.firstObject;
+        NSString *remark = textField.text ?: @"";
+        // 赋值给 model
+        model.remark = remark;
+        // 保存到本地
+        [[RemarkManager sharedManager] saveRemark:remark forFilePath:model.filePath];
+        if([viewController isKindOfClass:[FileListViewController class]]){
+            FileListViewController * vc = (FileListViewController*)viewController;
+            [vc.tableView reloadData];
+        }
+        
+    }]];
+    
+    [viewController presentViewController:alert animated:YES completion:nil];
+    
 }
 
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message fromViewController:(UIViewController *)viewController {
