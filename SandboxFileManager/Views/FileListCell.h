@@ -35,7 +35,7 @@
 @interface FileListCell : UITableViewCell
 
 #pragma mark - 只读属性
-
+@property (nonatomic, strong) FileModel *model;
 /// 文件图标
 @property (nonatomic, strong, readonly) UIImageView *fileIconView;
 

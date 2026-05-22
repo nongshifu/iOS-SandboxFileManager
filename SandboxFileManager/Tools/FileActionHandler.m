@@ -2,6 +2,7 @@
 #import "FileModel.h"
 #import "FileNotification.h"
 #import "FileListViewController.h"
+#import "FileListTableViewController.h"
 #import "RemarkManager.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -514,7 +515,10 @@
         [[RemarkManager sharedManager] saveRemark:remark forFilePath:model.filePath];
         if([viewController isKindOfClass:[FileListViewController class]]){
             FileListViewController * vc = (FileListViewController*)viewController;
-            [vc.tableView reloadData];
+            FileListTableViewController *currentVC = [vc currentTableViewController];
+            if (currentVC) {
+                [currentVC.tableView reloadData];
+            }
         }
         
     }]];

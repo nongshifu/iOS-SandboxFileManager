@@ -1,5 +1,6 @@
 #import "FileListCell.h"
 #import <AVFoundation/AVFoundation.h>
+#import "FavoriteManager.h"
 
 @interface FileListCell ()
 @property (nonatomic, strong, readwrite) UIImageView *fileIconView;
@@ -10,7 +11,7 @@
 @property (nonatomic, strong, readwrite) UIButton *checkButton;
 @property (nonatomic, strong, readwrite) UIButton *actionButton;
 @property (nonatomic, strong) UIView *containerView;
-@property (nonatomic, strong) FileModel *currentModel;
+
 @end
 
 @implementation FileListCell
@@ -54,6 +55,7 @@
     [self.checkButton setImage:[UIImage systemImageNamed:@"circle"] forState:UIControlStateNormal];
     [self.checkButton setImage:[UIImage systemImageNamed:@"checkmark.circle.fill"] forState:UIControlStateSelected];
     self.checkButton.hidden = YES;
+    
     [self.checkButton addTarget:self action:@selector(checkButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [self.containerView addSubview:self.checkButton];
 
@@ -77,9 +79,10 @@
     CGFloat actionButtonWidth = 44;
     CGFloat leftPadding = 15;
     CGFloat iconSize = 32;
+    CGFloat checkButtonSize = 30;
 
     if (self.isBatchEditing) {
-        self.checkButton.frame = CGRectMake(10, (height - 24) / 2, 24, 24);
+        self.checkButton.frame = CGRectMake(0, 0, checkButtonSize*1.5, height);
         self.actionButton.frame = CGRectMake(width - actionButtonWidth, (height - actionButtonWidth) / 2, actionButtonWidth, actionButtonWidth);
         self.fileIconView.frame = CGRectMake(44, (height - iconSize) / 2, iconSize, iconSize);
         if (self.remarkLabel.text.length > 0) {
@@ -108,8 +111,13 @@
 }
 
 - (void)configWithFileModel:(FileModel *)model {
-    self.currentModel = model;
+    self.model = model;
     self.fileNameLabel.text = model.fileName;
+   
+    
+    model.isFavorite = [[FavoriteManager sharedManager] isFavorite:self.model.filePath];
+    
+    self.fileNameLabel.textColor = model.isFavorite ? [UIColor systemOrangeColor] : [UIColor labelColor];
 
     NSString *sizeStr = [model formattedFileSize];
     NSString *dateStr = [model formattedModificationDate];
@@ -139,10 +147,10 @@
     }
 
     if (model.isFavorite) {
-        self.containerView.backgroundColor = [UIColor systemBackgroundColor];
-        if (model.itemType == FileItemTypeFolder || !self.fileIconView.image) {
-            self.fileIconView.tintColor = [UIColor systemOrangeColor];
-        }
+        self.containerView.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.1];
+        self.fileIconView.tintColor = [UIColor systemOrangeColor];
+        NSLog(@"已经收藏");
+        
     } else {
         self.containerView.backgroundColor = [UIColor clearColor];
         if (model.itemType == FileItemTypeFolder || !self.fileIconView.image) {
@@ -235,17 +243,18 @@
 
 - (void)checkButtonTapped:(UIButton *)sender {
     sender.selected = !sender.selected;
-    self.currentModel.isSelected = sender.selected;
+    self.model.isSelected = sender.selected;
 
     if ([self.cellDelegate respondsToSelector:@selector(fileListCell:didSelectCheckBox:forFileModel:)]) {
-        [self.cellDelegate fileListCell:self didSelectCheckBox:sender.selected forFileModel:self.currentModel];
+        [self.cellDelegate fileListCell:self didSelectCheckBox:sender.selected forFileModel:self.model];
     }
 }
 
 - (void)actionButtonTapped:(UIButton *)sender {
     if ([self.cellDelegate respondsToSelector:@selector(fileListCell:didTapActionButtonForFileModel:)]) {
-        [self.cellDelegate fileListCell:self didTapActionButtonForFileModel:self.currentModel];
+        [self.cellDelegate fileListCell:self didTapActionButtonForFileModel:self.model];
     }
+    
 }
 
 - (void)setIsBatchEditing:(BOOL)isBatchEditing {

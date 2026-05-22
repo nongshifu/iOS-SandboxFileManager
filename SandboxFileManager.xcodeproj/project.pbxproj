@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		602A56C62FC0CDA5006191A9 /* WindowSwitcherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56C52FC0CDA5006191A9 /* WindowSwitcherViewController.m */; };
+		602A56C92FC0D4C3006191A9 /* WindowCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56C82FC0D4C2006191A9 /* WindowCardCell.m */; };
+		602A56CC2FC0E2E2006191A9 /* DockFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56CA2FC0E2E2006191A9 /* DockFlowLayout.m */; };
 		60743A8C2FA74279007B4BF4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A8B2FA74279007B4BF4 /* AppDelegate.m */; };
 		60743A8F2FA74279007B4BF4 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A8E2FA74279007B4BF4 /* SceneDelegate.m */; };
 		60743A922FA74279007B4BF4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A912FA74279007B4BF4 /* ViewController.m */; };
@@ -36,6 +39,7 @@
 		60743C442FA7D86D007B4BF4 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 60743C382FA7D86D007B4BF4 /* ioapi.c */; };
 		60743C452FA7D86D007B4BF4 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 60743C392FA7D86D007B4BF4 /* mztools.c */; };
 		60743C462FA7D86D007B4BF4 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743C412FA7D86D007B4BF4 /* SSZipArchive.m */; };
+		6093EA292FBF05F5006358F7 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 6093EA282FBF05F5006358F7 /* Podfile */; };
 		60CFF6D82FB614E2004CBF4B /* RemarkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF6D62FB614E2004CBF4B /* RemarkManager.m */; };
 		60CFF6DB2FB61754004CBF4B /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6D92FB61754004CBF4B /* PhotosUI.framework */; };
 		60CFF6DC2FB61754004CBF4B /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 60CFF6DA2FB61754004CBF4B /* Photos.framework */; };
@@ -50,9 +54,26 @@
 		60CFF71E2FB6549F004CBF4B /* PlistEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7132FB6549F004CBF4B /* PlistEditorViewController.m */; };
 		60CFF7202FB6549F004CBF4B /* ItemEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7172FB6549F004CBF4B /* ItemEditorViewController.m */; };
 		60CFF7232FB662FE004CBF4B /* NestedEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7222FB662FE004CBF4B /* NestedEditorViewController.m */; };
+		60CFF77C2FB71CA2004CBF4B /* FileSelectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF77B2FB71CA2004CBF4B /* FileSelectionManager.m */; };
+		60CFF77F2FB722B3004CBF4B /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF77E2FB722B3004CBF4B /* RootViewController.m */; };
+		60CFF7862FB722C7004CBF4B /* HistoryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7822FB722C7004CBF4B /* HistoryManager.m */; };
+		60CFF7872FB722C7004CBF4B /* RecycleBinManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7832FB722C7004CBF4B /* RecycleBinManager.m */; };
+		60CFF7882FB722C7004CBF4B /* WindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7852FB722C7004CBF4B /* WindowManager.m */; };
+		60CFF78B2FB73156004CBF4B /* RecycleBinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF78A2FB73156004CBF4B /* RecycleBinViewController.m */; };
+		60CFF7912FBC9489004CBF4B /* HistoryListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7902FBC9489004CBF4B /* HistoryListViewController.m */; };
+		60CFF7942FBCA530004CBF4B /* FileSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7932FBCA530004CBF4B /* FileSelectionViewController.m */; };
+		60CFF7972FBCCBED004CBF4B /* FileListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7952FBCCBED004CBF4B /* FileListTableViewController.m */; };
+		60CFF79A2FBCDAF1004CBF4B /* FileOpener.m in Sources */ = {isa = PBXBuildFile; fileRef = 60CFF7982FBCDAF1004CBF4B /* FileOpener.m */; };
+		6E8F95FD5A1E583D5C5CD515 /* Pods_SandboxFileManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 627DA441D6C6EF05EEF2EDF4 /* Pods_SandboxFileManager.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		602A56C42FC0CDA5006191A9 /* WindowSwitcherViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowSwitcherViewController.h; sourceTree = "<group>"; };
+		602A56C52FC0CDA5006191A9 /* WindowSwitcherViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowSwitcherViewController.m; sourceTree = "<group>"; };
+		602A56C72FC0D4C2006191A9 /* WindowCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowCardCell.h; sourceTree = "<group>"; };
+		602A56C82FC0D4C2006191A9 /* WindowCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowCardCell.m; sourceTree = "<group>"; };
+		602A56CA2FC0E2E2006191A9 /* DockFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DockFlowLayout.m; sourceTree = "<group>"; };
+		602A56CB2FC0E2E2006191A9 /* DockFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DockFlowLayout.h; sourceTree = "<group>"; };
 		60743A872FA74279007B4BF4 /* SandboxFileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SandboxFileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60743A8A2FA74279007B4BF4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		60743A8B2FA74279007B4BF4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -104,6 +125,7 @@
 		60743C3F2FA7D86D007B4BF4 /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
 		60743C402FA7D86D007B4BF4 /* UNZip-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UNZip-Prefix.pch"; sourceTree = "<group>"; };
 		60743C412FA7D86D007B4BF4 /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
+		6093EA282FBF05F5006358F7 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		60CFF6D62FB614E2004CBF4B /* RemarkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemarkManager.m; sourceTree = "<group>"; };
 		60CFF6D72FB614E2004CBF4B /* RemarkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemarkManager.h; sourceTree = "<group>"; };
 		60CFF6D92FB61754004CBF4B /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
@@ -128,6 +150,29 @@
 		60CFF7182FB6549F004CBF4B /* PlistEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlistEditorViewController.h; sourceTree = "<group>"; };
 		60CFF7212FB662FE004CBF4B /* NestedEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NestedEditorViewController.h; sourceTree = "<group>"; };
 		60CFF7222FB662FE004CBF4B /* NestedEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NestedEditorViewController.m; sourceTree = "<group>"; };
+		60CFF77A2FB71CA2004CBF4B /* FileSelectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileSelectionManager.h; sourceTree = "<group>"; };
+		60CFF77B2FB71CA2004CBF4B /* FileSelectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileSelectionManager.m; sourceTree = "<group>"; };
+		60CFF77D2FB722B3004CBF4B /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		60CFF77E2FB722B3004CBF4B /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
+		60CFF7802FB722C7004CBF4B /* HistoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryManager.h; sourceTree = "<group>"; };
+		60CFF7812FB722C7004CBF4B /* RecycleBinManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecycleBinManager.h; sourceTree = "<group>"; };
+		60CFF7822FB722C7004CBF4B /* HistoryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryManager.m; sourceTree = "<group>"; };
+		60CFF7832FB722C7004CBF4B /* RecycleBinManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecycleBinManager.m; sourceTree = "<group>"; };
+		60CFF7842FB722C7004CBF4B /* WindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowManager.h; sourceTree = "<group>"; };
+		60CFF7852FB722C7004CBF4B /* WindowManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowManager.m; sourceTree = "<group>"; };
+		60CFF7892FB73156004CBF4B /* RecycleBinViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecycleBinViewController.h; sourceTree = "<group>"; };
+		60CFF78A2FB73156004CBF4B /* RecycleBinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecycleBinViewController.m; sourceTree = "<group>"; };
+		60CFF78F2FBC9489004CBF4B /* HistoryListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryListViewController.h; sourceTree = "<group>"; };
+		60CFF7902FBC9489004CBF4B /* HistoryListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryListViewController.m; sourceTree = "<group>"; };
+		60CFF7922FBCA530004CBF4B /* FileSelectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileSelectionViewController.h; sourceTree = "<group>"; };
+		60CFF7932FBCA530004CBF4B /* FileSelectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileSelectionViewController.m; sourceTree = "<group>"; };
+		60CFF7952FBCCBED004CBF4B /* FileListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileListTableViewController.m; sourceTree = "<group>"; };
+		60CFF7962FBCCBED004CBF4B /* FileListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileListTableViewController.h; sourceTree = "<group>"; };
+		60CFF7982FBCDAF1004CBF4B /* FileOpener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOpener.m; sourceTree = "<group>"; };
+		60CFF7992FBCDAF1004CBF4B /* FileOpener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOpener.h; sourceTree = "<group>"; };
+		627DA441D6C6EF05EEF2EDF4 /* Pods_SandboxFileManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SandboxFileManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		996380A3E9504366D481485A /* Pods-SandboxFileManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandboxFileManager.debug.xcconfig"; path = "Target Support Files/Pods-SandboxFileManager/Pods-SandboxFileManager.debug.xcconfig"; sourceTree = "<group>"; };
+		E5E4A27F7719BF47B4185014 /* Pods-SandboxFileManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SandboxFileManager.release.xcconfig"; path = "Target Support Files/Pods-SandboxFileManager/Pods-SandboxFileManager.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +194,7 @@
 				60743AF22FA76751007B4BF4 /* UniformTypeIdentifiers.framework in Frameworks */,
 				60743AEC2FA7663E007B4BF4 /* SystemConfiguration.framework in Frameworks */,
 				60743AE42FA76627007B4BF4 /* MobileCoreServices.framework in Frameworks */,
+				6E8F95FD5A1E583D5C5CD515 /* Pods_SandboxFileManager.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +238,7 @@
 				60743A902FA74279007B4BF4 /* ViewController.h */,
 				60743A912FA74279007B4BF4 /* ViewController.m */,
 				60743A932FA74279007B4BF4 /* Main.storyboard */,
+				6093EA282FBF05F5006358F7 /* Podfile */,
 				60743A962FA7427B007B4BF4 /* Assets.xcassets */,
 				60743A982FA7427B007B4BF4 /* LaunchScreen.storyboard */,
 				60743A9B2FA7427B007B4BF4 /* Info.plist */,
@@ -203,6 +250,8 @@
 		60743AC02FA742AB007B4BF4 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				60CFF7992FBCDAF1004CBF4B /* FileOpener.h */,
+				60CFF7982FBCDAF1004CBF4B /* FileOpener.m */,
 				60CFF6D72FB614E2004CBF4B /* RemarkManager.h */,
 				60CFF6D62FB614E2004CBF4B /* RemarkManager.m */,
 				60743ADF2FA765E7007B4BF4 /* FileActionHandler.h */,
@@ -243,6 +292,10 @@
 		60743ACC2FA742AB007B4BF4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				602A56CB2FC0E2E2006191A9 /* DockFlowLayout.h */,
+				602A56CA2FC0E2E2006191A9 /* DockFlowLayout.m */,
+				602A56C72FC0D4C2006191A9 /* WindowCardCell.h */,
+				602A56C82FC0D4C2006191A9 /* WindowCardCell.m */,
 				60743ACD2FA742AB007B4BF4 /* FileListCell.m */,
 				60743ACE2FA742AB007B4BF4 /* FileListCell.h */,
 			);
@@ -261,6 +314,14 @@
 		60743AD22FA742AC007B4BF4 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				60CFF7802FB722C7004CBF4B /* HistoryManager.h */,
+				60CFF7822FB722C7004CBF4B /* HistoryManager.m */,
+				60CFF7812FB722C7004CBF4B /* RecycleBinManager.h */,
+				60CFF7832FB722C7004CBF4B /* RecycleBinManager.m */,
+				60CFF7842FB722C7004CBF4B /* WindowManager.h */,
+				60CFF7852FB722C7004CBF4B /* WindowManager.m */,
+				60CFF77A2FB71CA2004CBF4B /* FileSelectionManager.h */,
+				60CFF77B2FB71CA2004CBF4B /* FileSelectionManager.m */,
 				60743AD32FA742AC007B4BF4 /* FavoriteManager.h */,
 				60743AD42FA742AC007B4BF4 /* FavoriteManager.m */,
 			);
@@ -270,14 +331,26 @@
 		60743AD52FA742AC007B4BF4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				60CFF70A2FB6549F004CBF4B /* NewPlistEditVC */,
-				60CFF7112FB6549F004CBF4B /* plist */,
-				60CFF6E12FB6308F004CBF4B /* FilePreviewViewController.h */,
-				60CFF6E02FB6308F004CBF4B /* FilePreviewViewController.m */,
 				60CFF6DD2FB61DCE004CBF4B /* FavoriteListViewController.h */,
 				60CFF6DE2FB61DCE004CBF4B /* FavoriteListViewController.m */,
-				60743AD62FA742AC007B4BF4 /* FileListViewController.m */,
+				60CFF7962FBCCBED004CBF4B /* FileListTableViewController.h */,
+				60CFF7952FBCCBED004CBF4B /* FileListTableViewController.m */,
 				60743AD72FA742AC007B4BF4 /* FileListViewController.h */,
+				60743AD62FA742AC007B4BF4 /* FileListViewController.m */,
+				60CFF6E12FB6308F004CBF4B /* FilePreviewViewController.h */,
+				60CFF6E02FB6308F004CBF4B /* FilePreviewViewController.m */,
+				60CFF7922FBCA530004CBF4B /* FileSelectionViewController.h */,
+				60CFF7932FBCA530004CBF4B /* FileSelectionViewController.m */,
+				60CFF78F2FBC9489004CBF4B /* HistoryListViewController.h */,
+				60CFF7902FBC9489004CBF4B /* HistoryListViewController.m */,
+				60CFF70A2FB6549F004CBF4B /* NewPlistEditVC */,
+				60CFF7112FB6549F004CBF4B /* plist */,
+				60CFF7892FB73156004CBF4B /* RecycleBinViewController.h */,
+				60CFF78A2FB73156004CBF4B /* RecycleBinViewController.m */,
+				60CFF77D2FB722B3004CBF4B /* RootViewController.h */,
+				60CFF77E2FB722B3004CBF4B /* RootViewController.m */,
+				602A56C42FC0CDA5006191A9 /* WindowSwitcherViewController.h */,
+				602A56C52FC0CDA5006191A9 /* WindowSwitcherViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -300,6 +373,7 @@
 				60743AE62FA7662D007B4BF4 /* AVFAudio.framework */,
 				60743AE52FA7662D007B4BF4 /* AVFoundation.framework */,
 				60743AE32FA76627007B4BF4 /* MobileCoreServices.framework */,
+				627DA441D6C6EF05EEF2EDF4 /* Pods_SandboxFileManager.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -360,6 +434,8 @@
 		F1D82E0C0E7CCFDA465AD38D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				996380A3E9504366D481485A /* Pods-SandboxFileManager.debug.xcconfig */,
+				E5E4A27F7719BF47B4185014 /* Pods-SandboxFileManager.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -371,9 +447,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 60743AB62FA7427B007B4BF4 /* Build configuration list for PBXNativeTarget "SandboxFileManager" */;
 			buildPhases = (
+				44887756D8547D0CE1E6CD88 /* [CP] Check Pods Manifest.lock */,
 				60743A832FA74279007B4BF4 /* Sources */,
 				60743A842FA74279007B4BF4 /* Frameworks */,
 				60743A852FA74279007B4BF4 /* Resources */,
+				1A739B63B0C4769C58CE5414 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -423,11 +501,54 @@
 			files = (
 				60743A9A2FA7427B007B4BF4 /* LaunchScreen.storyboard in Resources */,
 				60743A972FA7427B007B4BF4 /* Assets.xcassets in Resources */,
+				6093EA292FBF05F5006358F7 /* Podfile in Resources */,
 				60743A952FA74279007B4BF4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1A739B63B0C4769C58CE5414 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SandboxFileManager/Pods-SandboxFileManager-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SandboxFileManager/Pods-SandboxFileManager-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SandboxFileManager/Pods-SandboxFileManager-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		44887756D8547D0CE1E6CD88 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SandboxFileManager-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		60743A832FA74279007B4BF4 /* Sources */ = {
@@ -442,22 +563,35 @@
 				60743ADE2FA742AC007B4BF4 /* FileListViewController.m in Sources */,
 				60CFF6DF2FB61DCE004CBF4B /* FavoriteListViewController.m in Sources */,
 				60743C422FA7D86D007B4BF4 /* unzip.c in Sources */,
+				60CFF7972FBCCBED004CBF4B /* FileListTableViewController.m in Sources */,
 				60CFF71B2FB6549F004CBF4B /* PlistNode.m in Sources */,
+				602A56C62FC0CDA5006191A9 /* WindowSwitcherViewController.m in Sources */,
 				60743ADA2FA742AC007B4BF4 /* FileNotification.m in Sources */,
 				60CFF7232FB662FE004CBF4B /* NestedEditorViewController.m in Sources */,
+				60CFF79A2FBCDAF1004CBF4B /* FileOpener.m in Sources */,
+				60CFF7942FBCA530004CBF4B /* FileSelectionViewController.m in Sources */,
 				60743A922FA74279007B4BF4 /* ViewController.m in Sources */,
 				60743AD82FA742AC007B4BF4 /* SandboxTool.m in Sources */,
 				60743A8C2FA74279007B4BF4 /* AppDelegate.m in Sources */,
+				60CFF7862FB722C7004CBF4B /* HistoryManager.m in Sources */,
+				602A56C92FC0D4C3006191A9 /* WindowCardCell.m in Sources */,
 				60CFF6D82FB614E2004CBF4B /* RemarkManager.m in Sources */,
 				60743C442FA7D86D007B4BF4 /* ioapi.c in Sources */,
 				60743ADB2FA742AC007B4BF4 /* FileListCell.m in Sources */,
 				60CFF6E22FB6308F004CBF4B /* FilePreviewViewController.m in Sources */,
 				60743A9D2FA7427B007B4BF4 /* main.m in Sources */,
+				60CFF78B2FB73156004CBF4B /* RecycleBinViewController.m in Sources */,
 				60743C432FA7D86D007B4BF4 /* zip.c in Sources */,
 				60CFF71C2FB6549F004CBF4B /* PlistEditDetailVC.m in Sources */,
+				60CFF77C2FB71CA2004CBF4B /* FileSelectionManager.m in Sources */,
+				60CFF7882FB722C7004CBF4B /* WindowManager.m in Sources */,
+				60CFF7872FB722C7004CBF4B /* RecycleBinManager.m in Sources */,
+				60CFF77F2FB722B3004CBF4B /* RootViewController.m in Sources */,
 				60CFF7202FB6549F004CBF4B /* ItemEditorViewController.m in Sources */,
 				60CFF71E2FB6549F004CBF4B /* PlistEditorViewController.m in Sources */,
+				60CFF7912FBC9489004CBF4B /* HistoryListViewController.m in Sources */,
 				60743A8F2FA74279007B4BF4 /* SceneDelegate.m in Sources */,
+				602A56CC2FC0E2E2006191A9 /* DockFlowLayout.m in Sources */,
 				60CFF71A2FB6549F004CBF4B /* PlistEditorVC.m in Sources */,
 				60743ADD2FA742AC007B4BF4 /* FavoriteManager.m in Sources */,
 			);
@@ -603,12 +737,14 @@
 		};
 		60743AB72FA7427B007B4BF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 996380A3E9504366D481485A /* Pods-SandboxFileManager.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7RVGRL9LRW;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SandboxFileManager/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -632,12 +768,14 @@
 		};
 		60743AB82FA7427B007B4BF4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E5E4A27F7719BF47B4185014 /* Pods-SandboxFileManager.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7RVGRL9LRW;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SandboxFileManager/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

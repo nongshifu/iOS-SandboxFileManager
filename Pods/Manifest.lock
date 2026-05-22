@@ -1,0 +1,78 @@
+PODS:
+  - FontAwesomeKit (2.2.1):
+    - FontAwesomeKit/Core (= 2.2.1)
+    - FontAwesomeKit/FontAwesome (= 2.2.1)
+    - FontAwesomeKit/FoundationIcons (= 2.2.1)
+    - FontAwesomeKit/IonIcons (= 2.2.1)
+    - FontAwesomeKit/Material (= 2.2.1)
+    - FontAwesomeKit/Octicons (= 2.2.1)
+    - FontAwesomeKit/Zocial (= 2.2.1)
+  - FontAwesomeKit/Core (2.2.1)
+  - FontAwesomeKit/FontAwesome (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/FoundationIcons (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/IonIcons (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/Material (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/Octicons (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/Zocial (2.2.1):
+    - FontAwesomeKit/Core
+  - HWPanModal (0.9.9)
+  - JXCategoryView (1.6.8)
+  - LGSideMenuController (2.3.0)
+  - Masonry (1.1.0)
+  - MJRefresh (3.7.9)
+  - SSZipArchive (2.4.3)
+  - SVProgressHUD (2.3.1):
+    - SVProgressHUD/Core (= 2.3.1)
+  - SVProgressHUD/Core (2.3.1)
+  - YYCache (1.0.4)
+  - YYModel (1.0.4)
+  - ZXNavigationBar (1.4.1)
+
+DEPENDENCIES:
+  - FontAwesomeKit
+  - HWPanModal (~> 0.9.4)
+  - JXCategoryView
+  - LGSideMenuController (= 2.3.0)
+  - Masonry
+  - MJRefresh
+  - SSZipArchive
+  - SVProgressHUD
+  - YYCache
+  - YYModel
+  - ZXNavigationBar
+
+SPEC REPOS:
+  trunk:
+    - FontAwesomeKit
+    - HWPanModal
+    - JXCategoryView
+    - LGSideMenuController
+    - Masonry
+    - MJRefresh
+    - SSZipArchive
+    - SVProgressHUD
+    - YYCache
+    - YYModel
+    - ZXNavigationBar
+
+SPEC CHECKSUMS:
+  FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
+  HWPanModal: b57a6717d3cdcd666bff44f9dd2a5be9f4d6f5d2
+  JXCategoryView: 262d503acea0b1278c79a1c25b7332ffaef4d518
+  LGSideMenuController: 330643f700bce9783a153660123de7cb64b5aa78
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  MJRefresh: ff9e531227924c84ce459338414550a05d2aea78
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
+  SVProgressHUD: 4837c74bdfe2e51e8821c397825996a8d7de6e22
+  YYCache: 8105b6638f5e849296c71f331ff83891a4942952
+  YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
+  ZXNavigationBar: a8ceb13fe37f9ca894cf6ae22d805cbdbb9ad6b1
+
+PODFILE CHECKSUM: 0a32322c625552ce364cdad3ebab695bdc723ddd
+
+COCOAPODS: 1.16.2

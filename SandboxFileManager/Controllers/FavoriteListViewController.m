@@ -150,6 +150,7 @@ static NSString * const kFavoriteCellIdentifier = @"FavoriteCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSLog(@"点击了");
 
     FileModel *model = [self currentDataList][indexPath.row];
 
@@ -196,6 +197,27 @@ static NSString * const kFavoriteCellIdentifier = @"FavoriteCell";
 }
 
 - (void)fileListCell:(FileListCell *)cell didTapActionButtonForFileModel:(FileModel *)model {
+    NSLog(@"点击了");
+
+
+    NSString *targetPath = (model.itemType == FileItemTypeFolder) ? model.filePath : model.parentDirPath;
+
+    if (self.sourceFileListVC) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            [self.sourceFileListVC navigateToPath:targetPath];
+        }];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:^{
+            FileListViewController *fileListVC = [[FileListViewController alloc] initWithFullPath:targetPath];
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:fileListVC];
+            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+            UIViewController *presenter = [UIApplication sharedApplication].keyWindow.rootViewController;
+            while (presenter.presentedViewController) {
+                presenter = presenter.presentedViewController;
+            }
+            [presenter presentViewController:navController animated:YES completion:nil];
+        }];
+    }
 }
 
 @end
