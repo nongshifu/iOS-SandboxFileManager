@@ -10,6 +10,7 @@
 #import "FileModel.h"
 #import "FileEnum.h"
 #import "SandboxTool.h"
+#import "SandboxFileManager.h"
 
 static NSString * const kCellIdentifier = @"DemoCell";
 
@@ -48,6 +49,12 @@ static NSString * const kCellIdentifier = @"DemoCell";
 
         @{@"title": @"setInitialPath 方法", @"type": @"section"},
         @{@"title": @"9. 先设置后初始化", @"subtitle": @"[vc setInitialPath:path] 再 init]", @"selector": @"demo9_SetInitialPath"},
+        
+        @{@"title": @"🎉 新：统一入口方式", @"type": @"section"},
+        @{@"title": @"10. 完整文件管理器", @"subtitle": @"包含底部导航，所有功能", @"selector": @"demo10_FullManager"},
+        @{@"title": @"11. 文件浏览器", @"subtitle": @"仅文件列表，自定义路径", @"selector": @"demo11_FileBrowser"},
+        @{@"title": @"12. 文件选择器（单选）", @"subtitle": @"选择单个文件", @"selector": @"demo12_FilePickerSingle"},
+        @{@"title": @"13. 文件选择器（多选）", @"subtitle": @"选择多个文件", @"selector": @"demo13_FilePickerMulti"},
     ];
 }
 
@@ -254,6 +261,57 @@ static NSString * const kCellIdentifier = @"DemoCell";
     NSString *docsPath = [SandboxTool getSandboxDirectoryPath:SandboxDirectoryTypeDocuments];
     [vc setInitialPath:docsPath];
     [self openFileListViewController:vc];
+}
+
+#pragma mark - 新：统一入口方式示例
+
+- (void)demo10_FullManager {
+    // 完整文件管理器，包含底部导航
+    [SandboxFileManager presentFullFileManagerFrom:self];
+}
+
+- (void)demo11_FileBrowser {
+    // 文件浏览器，仅文件列表
+    NSString *docsPath = [SandboxTool getSandboxDirectoryPath:SandboxDirectoryTypeDocuments];
+    [SandboxFileManager presentFileBrowserFrom:self path:docsPath];
+}
+
+- (void)demo12_FilePickerSingle {
+    // 文件选择器 - 单选
+    [SandboxFileManager presentFilePickerFrom:self
+                                   initialPath:nil
+                        allowsMultipleSelection:NO
+                                      completion:^(NSArray<FileModel *> * _Nullable selectedFiles) {
+        if (selectedFiles.count > 0) {
+            FileModel *file = selectedFiles.firstObject;
+            [self showAlertWithTitle:@"选择文件" message:[NSString stringWithFormat:@"选择了: %@", file.fileName]];
+        }
+    }];
+}
+
+- (void)demo13_FilePickerMulti {
+    // 文件选择器 - 多选
+    [SandboxFileManager presentFilePickerFrom:self
+                                   initialPath:nil
+                        allowsMultipleSelection:YES
+                                      completion:^(NSArray<FileModel *> * _Nullable selectedFiles) {
+        if (selectedFiles.count > 0) {
+            NSMutableString *fileNames = [NSMutableString string];
+            for (FileModel *file in selectedFiles) {
+                [fileNames appendFormat:@"- %@\n", file.fileName];
+            }
+            [self showAlertWithTitle:[NSString stringWithFormat:@"选择了 %ld 个文件", (long)selectedFiles.count]
+                             message:fileNames];
+        }
+    }];
+}
+
+- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - FileManagerDelegate

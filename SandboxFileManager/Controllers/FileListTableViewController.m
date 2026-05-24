@@ -334,7 +334,22 @@ static NSString * const kCellIdentifier = @"FileListCell";
     cell.isBatchEditing = self.isBatchEditing;
     cell.cellDelegate = self;
     
+    // 判断是否需要高亮
+    if (self.highlightedFilePath && [model.filePath isEqualToString:self.highlightedFilePath]) {
+        cell.isHighlightedFile = YES;
+    } else {
+        cell.isHighlightedFile = NO;
+    }
+    
     return cell;
+}
+
+/// 清除高亮效果
+- (void)clearHighlight {
+    if (self.highlightedFilePath) {
+        self.highlightedFilePath = nil;
+        [self.tableView reloadData];
+    }
 }
 
 #pragma mark - UITableViewDelegate
@@ -407,7 +422,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
                                                fileList:self.isShowingSearchResults ? self.searchResults : self.fileList
                                             currentIndex:indexPath.row
                                          currentDirPath:self.currentDirPath
-                                      fromViewController:self];
+                                      fromViewController:self.fileListViewController];
         }
     }
 }
@@ -565,7 +580,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     if (indexPath) {
         // 触发左滑效果
-        [self showSwipeActionsForRowAtIndexPath:indexPath];
+        [[FileActionHandler sharedHandler] showActionSheetForModel:model fromViewController:self delegate:self];
     }
 }
 

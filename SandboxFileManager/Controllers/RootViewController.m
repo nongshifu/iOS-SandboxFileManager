@@ -146,6 +146,7 @@
     [self updateSelectionCount];
 }
 
+//退出编辑模式
 - (void)exitEditMode {
     if(self.isEditMode){
         self.isEditMode = NO;
@@ -183,19 +184,21 @@
     if (self.isEditMode) {
         // 编辑模式下，点击标签执行相应操作
         NSInteger index = [self.viewControllers indexOfObject:viewController];
-        
+        self.browserVC = [[WindowManager sharedManager] currentWindow];
         switch (index) {
             case 0: // 拷贝
-                [self performDuplicateAction];
+                self.browserVC.isCopyOperation = YES;
+                [self.browserVC didSelectAction:FileOperationActionCopy];
                 return NO; // 不切换视图
             case 1: // 移动
-                [self performMoveAction];
+                self.browserVC.isCopyOperation = NO;
+                [self.browserVC didSelectAction:FileOperationActionMove];
                 return NO;
             case 2: // 删除
-                [self performDeleteAction];
+                [self.browserVC didSelectAction:FileOperationActionDelete];
                 return NO;
             case 3: // 重命名
-                [self performRenameAction];
+                [self.browserVC didSelectAction:FileOperationActionRename];
                 return NO;
             case 4: // 完成（原来的窗口按钮位置）
                 [self performDoneAction];
@@ -226,168 +229,34 @@
 
 #pragma mark - Edit Mode Actions
 
-- (void)performDuplicateAction {
-    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
-    if (selectedFiles.count == 0) {
-        [self showAlertWithTitle:@"提示" message:@"请先选择要拷贝的文件"];
-        return;
-    }
-    
-    FileListViewController *currentVC = [[WindowManager sharedManager] currentWindow];
-    if (currentVC) {
-        currentVC.clipboardFileList = [selectedFiles mutableCopy];
-        currentVC.isCopyOperation = YES;
-    }
-    
-    [self showAlertWithTitle:@"提示" message:[NSString stringWithFormat:@"已复制 %ld 个项目", (long)selectedFiles.count]];
-    [self performDoneAction];
-}
 
-- (void)performMoveAction {
-    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
-    if (selectedFiles.count == 0) {
-        [self showAlertWithTitle:@"提示" message:@"请先选择要移动的文件"];
-        return;
-    }
-    
-    FileListViewController *currentVC = [[WindowManager sharedManager] currentWindow];
-    if (currentVC) {
-        currentVC.clipboardFileList = [selectedFiles mutableCopy];
-        currentVC.isCopyOperation = NO;
-    }
-    
-    [self showAlertWithTitle:@"提示" message:[NSString stringWithFormat:@"已剪切 %ld 个项目", (long)selectedFiles.count]];
-    [self performDoneAction];
-}
-
-- (void)performDeleteAction {
-    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
-    if (selectedFiles.count == 0) {
-        [self showAlertWithTitle:@"提示" message:@"请先选择要删除的文件"];
-        return;
-    }
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确认删除"
-                                                                   message:[NSString stringWithFormat:@"确定要删除选中的 %lu 个项目吗？", (unsigned long)selectedFiles.count]
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [self executeDelete];
-    }]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)executeDelete {
-    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
-    
-    BOOL useRecycleBin = [[RecycleBinManager sharedManager] isRecycleBinEnabled];
-    BOOL allSuccess = YES;
-    
-    for (FileModel *model in selectedFiles) {
-        if (useRecycleBin) {
-            if (![[RecycleBinManager sharedManager] moveToRecycleBin:model]) {
-                allSuccess = NO;
-            }
-        } else {
-            if (![FileOperateTool deleteItemAtPath:model.filePath]) {
-                allSuccess = NO;
-            }
-        }
-    }
-    
-    [[FileSelectionManager sharedManager] clearAllSelections];
-    
-    if (allSuccess) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
-        [self showAlertWithTitle:@"成功" message:useRecycleBin ? @"已移至回收站" : @"删除成功"];
-    } else {
-        [self showAlertWithTitle:@"失败" message:@"部分文件操作失败"];
-    }
-    
-    [self performDoneAction];
-}
-
-- (void)performRenameAction {
-    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
-    if (selectedFiles.count == 0) {
-        [self showAlertWithTitle:@"提示" message:@"请先选择要重命名的文件"];
-        return;
-    }
-    
-    if (selectedFiles.count > 1) {
-        [self showAlertWithTitle:@"提示" message:@"一次只能重命名一个文件"];
-        return;
-    }
-    
-    FileModel *model = selectedFiles.firstObject;
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"重命名"
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.text = model.fileName;
-    }];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSString *newName = alert.textFields.firstObject.text;
-        if (newName && newName.length > 0 && ![newName isEqualToString:model.fileName]) {
-            NSString *newPath = [[model.filePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:newName];
-            
-            NSError *error = nil;
-            if ([[NSFileManager defaultManager] moveItemAtPath:model.filePath toPath:newPath error:&error]) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
-                [self showAlertWithTitle:@"成功" message:@"重命名成功"];
-            } else {
-                [self showAlertWithTitle:@"失败" message:error.localizedDescription];
-            }
-        }
-    }]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)performCompressAction {
-    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
-    if (selectedFiles.count == 0) {
-        [self showAlertWithTitle:@"提示" message:@"请先选择要压缩的文件"];
-        return;
-    }
-    
-    FileListViewController *currentVC = [[WindowManager sharedManager] currentWindow];
-    if (currentVC) {
-        [[FileActionHandler sharedHandler] compressFilesWithInput:selectedFiles
-                                                   destinationDir:currentVC.currentDirPath
-                                               fromViewController:self];
-    }
-    
-    [self performDoneAction];
-}
-
+// 点击完成
 - (void)performDoneAction {
     [self exitEditMode];
     [[WindowManager sharedManager] currentWindow].isBatchEditing = NO;
 }
 
+// 点击切换到文件管理器
 - (void)switchToFileBrowser {
     self.selectedIndex = 0;
 }
 
+// 点击到历史列表
 - (void)switchToHistory {
     self.selectedIndex = 1;
 }
 
+// 点击到收藏列表
 - (void)switchToFavorites {
     self.selectedIndex = 2;
 }
 
+// 点击到回收站
 - (void)switchToRecycleBin {
     self.selectedIndex = 3;
 }
 
+// 显示窗口
 - (void)switchToWindowManager {
     // 使用 browserNavController 的顶层控制器来显示窗口切换器
     // 这样可以确保 view 已经在窗口层级中

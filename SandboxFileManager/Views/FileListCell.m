@@ -169,6 +169,32 @@
     [self setNeedsLayout];
 }
 
+- (void)setIsHighlightedFile:(BOOL)isHighlightedFile {
+    _isHighlightedFile = isHighlightedFile;
+    
+    if (isHighlightedFile) {
+        // 高亮效果：淡蓝色背景 + 脉冲动画
+        self.containerView.backgroundColor = [[UIColor systemBlueColor] colorWithAlphaComponent:0.15];
+        
+        // 添加脉冲动画
+        [UIView animateWithDuration:0.6
+                              delay:0
+                            options:UIViewKeyframeAnimationOptionAutoreverse | UIViewKeyframeAnimationOptionRepeat
+                         animations:^{
+                             self.containerView.backgroundColor = [[UIColor systemBlueColor] colorWithAlphaComponent:0.3];
+                         } completion:nil];
+    } else {
+        // 移除高亮效果，恢复原状
+        [self.containerView.layer removeAllAnimations];
+        
+        if (self.model.isFavorite) {
+            self.containerView.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.1];
+        } else {
+            self.containerView.backgroundColor = [UIColor clearColor];
+        }
+    }
+}
+
 - (UIImage *)iconForFileExtension:(NSString *)extension {
     // 音频文件
     NSArray *audioExtensions = @[@"mp3", @"wav", @"flac", @"aac", @"ogg", @"m4a", @"wma", @"aiff"];

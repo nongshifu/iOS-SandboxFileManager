@@ -236,6 +236,113 @@
     return count;
 }
 
+- (NSString *)checkRestoreConflictForItem:(RecycleBinItem *)item {
+    if (!item || !item.originalPath.length || !item.fileModel) {
+        return nil;
+    }
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *currentPath = item.fileModel.filePath;
+    NSString *targetPath = item.originalPath;
+    
+    if (![fm fileExistsAtPath:currentPath]) {
+        return nil;
+    }
+    
+    if ([fm fileExistsAtPath:targetPath]) {
+        return targetPath;
+    }
+    
+    return nil;
+}
+
+- (BOOL)restoreItem:(RecycleBinItem *)item withConflictHandler:(RecycleBinRestoreConflictHandler)conflictHandler {
+    if (!item || !item.originalPath.length || !item.fileModel) {
+        return NO;
+    }
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *currentPath = item.fileModel.filePath;
+    NSString *targetPath = item.originalPath;
+    
+    if (![fm fileExistsAtPath:currentPath]) {
+        return NO;
+    }
+    
+    if (![fm fileExistsAtPath:targetPath]) {
+        return [self restoreItem:item];
+    }
+    
+    if (conflictHandler) {
+        __weak typeof(self) weakSelf = self;
+        conflictHandler(item, targetPath, ^(RecycleBinRestoreConflictOption option) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (!strongSelf) return;
+            
+            if (option == RecycleBinRestoreConflictOptionOverwrite) {
+                [strongSelf overwriteAndRestoreItem:item toPath:targetPath];
+            } else {
+                [strongSelf renameAndRestoreItem:item];
+            }
+        });
+        return YES;
+    }
+    
+    return [self restoreItem:item];
+}
+
+- (void)overwriteAndRestoreItem:(RecycleBinItem *)item toPath:(NSString *)targetPath {
+    if (!item || !targetPath.length) {
+        return;
+    }
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *currentPath = item.fileModel.filePath;
+    
+    [fm removeItemAtPath:targetPath error:nil];
+    
+    NSError *error = nil;
+    BOOL success = [fm moveItemAtPath:currentPath toPath:targetPath error:&error];
+    
+    if (success) {
+        item.fileModel.filePath = targetPath;
+        [self.recycleBinItems removeObject:item];
+        [self saveRecycleBinToDisk];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
+    }
+}
+
+- (void)renameAndRestoreItem:(RecycleBinItem *)item {
+    if (!item || !item.originalPath.length || !item.fileModel) {
+        return;
+    }
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *currentPath = item.fileModel.filePath;
+    NSString *targetPath = item.originalPath;
+    
+    NSString *fileName = [targetPath lastPathComponent];
+    NSString *extension = [fileName pathExtension];
+    NSString *baseName = [fileName stringByDeletingPathExtension];
+    
+    NSInteger counter = 1;
+    while ([fm fileExistsAtPath:targetPath]) {
+        NSString *newFileName = [NSString stringWithFormat:@"%@_%ld%@", baseName, (long)counter, extension.length > 0 ? [NSString stringWithFormat:@".%@", extension] : @""];
+        targetPath = [[targetPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:newFileName];
+        counter++;
+    }
+    
+    NSError *error = nil;
+    BOOL success = [fm moveItemAtPath:currentPath toPath:targetPath error:&error];
+    
+    if (success) {
+        item.fileModel.filePath = targetPath;
+        [self.recycleBinItems removeObject:item];
+        [self saveRecycleBinToDisk];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
+    }
+}
+
 - (BOOL)deleteItem:(RecycleBinItem *)item {
     if (!item || !item.fileModel) {
         return NO;

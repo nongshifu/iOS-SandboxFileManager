@@ -60,6 +60,9 @@
 /// 刷新控件
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 
+/// 刚操作的文件路径（用于高亮显示）
+@property (nonatomic, copy) NSString *highlightedFilePath;
+
 #pragma mark - 初始化方法
 
 /// 使用标识符初始化

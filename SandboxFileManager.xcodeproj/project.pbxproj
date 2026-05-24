@@ -10,6 +10,8 @@
 		602A56C62FC0CDA5006191A9 /* WindowSwitcherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56C52FC0CDA5006191A9 /* WindowSwitcherViewController.m */; };
 		602A56C92FC0D4C3006191A9 /* WindowCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56C82FC0D4C2006191A9 /* WindowCardCell.m */; };
 		602A56CC2FC0E2E2006191A9 /* DockFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56CA2FC0E2E2006191A9 /* DockFlowLayout.m */; };
+		602A56CF2FC10223006191A9 /* SandboxFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56CE2FC10223006191A9 /* SandboxFileManager.m */; };
+		602A56D22FC1060F006191A9 /* FileOperationToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 602A56D12FC1060F006191A9 /* FileOperationToolbar.m */; };
 		60743A8C2FA74279007B4BF4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A8B2FA74279007B4BF4 /* AppDelegate.m */; };
 		60743A8F2FA74279007B4BF4 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A8E2FA74279007B4BF4 /* SceneDelegate.m */; };
 		60743A922FA74279007B4BF4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 60743A912FA74279007B4BF4 /* ViewController.m */; };
@@ -74,6 +76,10 @@
 		602A56C82FC0D4C2006191A9 /* WindowCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WindowCardCell.m; sourceTree = "<group>"; };
 		602A56CA2FC0E2E2006191A9 /* DockFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DockFlowLayout.m; sourceTree = "<group>"; };
 		602A56CB2FC0E2E2006191A9 /* DockFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DockFlowLayout.h; sourceTree = "<group>"; };
+		602A56CD2FC10223006191A9 /* SandboxFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SandboxFileManager.h; sourceTree = "<group>"; };
+		602A56CE2FC10223006191A9 /* SandboxFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SandboxFileManager.m; sourceTree = "<group>"; };
+		602A56D02FC1060F006191A9 /* FileOperationToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationToolbar.h; sourceTree = "<group>"; };
+		602A56D12FC1060F006191A9 /* FileOperationToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOperationToolbar.m; sourceTree = "<group>"; };
 		60743A872FA74279007B4BF4 /* SandboxFileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SandboxFileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60743A8A2FA74279007B4BF4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		60743A8B2FA74279007B4BF4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -298,6 +304,8 @@
 				602A56C82FC0D4C2006191A9 /* WindowCardCell.m */,
 				60743ACD2FA742AB007B4BF4 /* FileListCell.m */,
 				60743ACE2FA742AB007B4BF4 /* FileListCell.h */,
+				602A56D02FC1060F006191A9 /* FileOperationToolbar.h */,
+				602A56D12FC1060F006191A9 /* FileOperationToolbar.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -314,6 +322,8 @@
 		60743AD22FA742AC007B4BF4 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				602A56CD2FC10223006191A9 /* SandboxFileManager.h */,
+				602A56CE2FC10223006191A9 /* SandboxFileManager.m */,
 				60CFF7802FB722C7004CBF4B /* HistoryManager.h */,
 				60CFF7822FB722C7004CBF4B /* HistoryManager.m */,
 				60CFF7812FB722C7004CBF4B /* RecycleBinManager.h */,
@@ -564,6 +574,7 @@
 				60CFF6DF2FB61DCE004CBF4B /* FavoriteListViewController.m in Sources */,
 				60743C422FA7D86D007B4BF4 /* unzip.c in Sources */,
 				60CFF7972FBCCBED004CBF4B /* FileListTableViewController.m in Sources */,
+				602A56CF2FC10223006191A9 /* SandboxFileManager.m in Sources */,
 				60CFF71B2FB6549F004CBF4B /* PlistNode.m in Sources */,
 				602A56C62FC0CDA5006191A9 /* WindowSwitcherViewController.m in Sources */,
 				60743ADA2FA742AC007B4BF4 /* FileNotification.m in Sources */,
@@ -571,6 +582,7 @@
 				60CFF79A2FBCDAF1004CBF4B /* FileOpener.m in Sources */,
 				60CFF7942FBCA530004CBF4B /* FileSelectionViewController.m in Sources */,
 				60743A922FA74279007B4BF4 /* ViewController.m in Sources */,
+				602A56D22FC1060F006191A9 /* FileOperationToolbar.m in Sources */,
 				60743AD82FA742AC007B4BF4 /* SandboxTool.m in Sources */,
 				60743A8C2FA74279007B4BF4 /* AppDelegate.m in Sources */,
 				60CFF7862FB722C7004CBF4B /* HistoryManager.m in Sources */,

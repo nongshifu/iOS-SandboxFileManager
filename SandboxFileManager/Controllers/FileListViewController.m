@@ -26,18 +26,26 @@
 #import "FileSelectionViewController.h"
 #import "WindowSwitcherViewController.h"
 #import "WindowManager.h"
+#import "FileOperationToolbar.h"
 
-@interface FileListViewController () <UISearchResultsUpdating, UISearchBarDelegate, WindowSwitcherViewControllerDelegate>
+@interface FileListViewController () <UISearchResultsUpdating, UISearchBarDelegate, WindowSwitcherViewControllerDelegate, FileOperationToolbarDelegate>
+/// 返回按钮
 @property (nonatomic, strong) UIBarButtonItem *backButton;
+/// 进入选择模式
 @property (nonatomic, strong) UIBarButtonItem *selectionModeItem;
-@property (nonatomic, strong) UIBarButtonItem *searchScopeItem;
+/// 选择统计按钮
 @property (nonatomic, strong) UIBarButtonItem *selectionCountButton;
+/// 全选按钮
 @property (nonatomic, strong) UIBarButtonItem *selectAllButton;
+/// 全取消
 @property (nonatomic, strong) UIBarButtonItem *deselectAllButton;
+
+
 @property (nonatomic, copy) NSString *initialPath;
 @property (nonatomic, assign) SandboxDirectoryType initialSandboxDir;
 @property (nonatomic, copy) NSString *initialSubPath;
 @property (nonatomic, assign) BOOL hasCustomInitialPath;
+@property (nonatomic, strong) FileOperationToolbar *editToolbar;
 @end
 
 @implementation FileListViewController
@@ -177,6 +185,7 @@
     [self setupPathLabel];
     [self setupTableContainerView];
     [self setupSwipeGesture];
+    [self setupLeftActionPanel];
 }
 
 - (void)setupNavigationBar {
@@ -189,6 +198,7 @@
     self.createButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                     target:self
                                                                     action:@selector(createButtonTapped:)];
+    
     
     self.selectionModeItem = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"checkmark.circle"]
                                                              style:UIBarButtonItemStylePlain
@@ -218,13 +228,7 @@
                                                           style:UIBarButtonItemStylePlain
                                                          target:self
                                                          action:@selector(openCollectionListViewController)];
-    
-//    // 窗口切换按钮
-//    UIBarButtonItem *windowButton = [[UIBarButtonItem alloc] initWithImage:[UIImage systemImageNamed:@"rectangle.on.rectangle"]
-//                                                                     style:UIBarButtonItemStylePlain
-//                                                                    target:self
-//                                                                    action:@selector(showWindowSwitcher:)];
-//    
+     
     self.pasteButton = [[UIBarButtonItem alloc] initWithTitle:@"粘贴"
                                                        style:UIBarButtonItemStylePlain
                                                       target:self
@@ -343,6 +347,128 @@
     [self.view addGestureRecognizer:rightSwipeGesture];
 }
 
+- (void)setupLeftActionPanel {
+    self.leftActionButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    CGFloat width = 40.0f;
+    self.leftActionButton.frame = CGRectMake(0, 0, width, width);
+    self.leftActionButton.layer.cornerRadius = width/2;
+    self.leftActionButton.backgroundColor = [UIColor systemBlueColor];
+    self.leftActionButton.tintColor = [UIColor whiteColor];
+    
+    UIImage *icon = [UIImage systemImageNamed:@"ellipsis" withConfiguration:[UIImageSymbolConfiguration configurationWithPointSize:20 weight:UIImageSymbolWeightBold]];
+    [self.leftActionButton setImage:icon forState:UIControlStateNormal];
+    
+    self.leftActionButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.leftActionButton.layer.shadowOffset = CGSizeMake(0, 4);
+    self.leftActionButton.layer.shadowOpacity = 0.3;
+    self.leftActionButton.layer.shadowRadius = 6;
+    
+    [self.leftActionButton addTarget:self action:@selector(leftActionButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.leftActionButton.hidden = YES;
+    self.leftActionButton.alpha = 0;
+    [self.view addSubview:self.leftActionButton];
+    
+    _showingLeftActionButton = NO;
+}
+
+- (void)leftActionButtonTapped:(UIButton *)sender {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"请选择"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    // 移动拷贝
+    if(self.isCopyOperation){
+        [alert addAction:[UIAlertAction actionWithTitle:@"粘贴到此处" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self didSelectAction:FileOperationActionCopy];
+        }]];
+    }else{
+        [alert addAction:[UIAlertAction actionWithTitle:@"移动到此处" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self didSelectAction:FileOperationActionMove];
+        }]];
+    }
+    
+    
+    // 压缩
+    [alert addAction:[UIAlertAction actionWithTitle:@"压缩" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self didSelectAction:FileOperationActionCompress];
+    }]];
+    
+    // 收藏
+    [alert addAction:[UIAlertAction actionWithTitle:@"收藏" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self didSelectAction:FileOperationActionFavorite];
+    }]];
+    
+    // 取消收藏
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消收藏" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self didSelectAction:FileOperationActionRemoveFavorite];
+    }]];
+    
+    
+    // 删除
+    [alert addAction:[UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+        [self didSelectAction:FileOperationActionDelete];
+    }]];
+    
+    
+    // 取消
+    [alert addAction:[UIAlertAction actionWithTitle:@"清空选择数据" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [[FileSelectionManager sharedManager] clearAllSelections];
+        [self cancelPasteOperation];
+        [self hideLeftActionPanel];
+    }]];
+    
+    // 取消
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消操作" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [self cancelPasteOperation];
+    }]];
+    
+    // iPad 需要设置 popover
+    alert.popoverPresentationController.sourceView = sender;
+    alert.popoverPresentationController.sourceRect = sender.bounds;
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
+- (void)cancelPasteOperation {
+    self.clipboardFileList = nil;
+    self.pasteButton.enabled = NO;
+    self.pasteButton.title = @"粘贴";
+    NSMutableArray *items = [self.navigationItem.rightBarButtonItems mutableCopy];
+    [items removeObject:self.pasteButton];
+    self.navigationItem.rightBarButtonItems = @[self.selectionModeItem, self.collectionButton];
+    
+}
+
+
+- (void)showLeftActionPanel {
+    if (_showingLeftActionButton) {
+        return;
+    }
+    
+    _showingLeftActionButton = YES;
+    self.leftActionButton.hidden = NO;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.leftActionButton.alpha = 1;
+    }];
+}
+
+- (void)hideLeftActionPanel {
+    if (!_showingLeftActionButton) {
+        return;
+    }
+    
+    _showingLeftActionButton = NO;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.leftActionButton.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.leftActionButton.hidden = YES;
+    }];
+}
+
 - (void)setupNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleFavoriteChanged:)
@@ -363,9 +489,16 @@
     CGFloat sortButtonHeight = 26;
     CGFloat statisticsHeight = 20;
     CGFloat pathHeight = 26;
-    CGFloat toolbarHeight = 50;
+    CGFloat toolbarHeight = 60; // 自定义工具栏
     CGFloat bottomSafeHeight = self.view.safeAreaInsets.bottom;
     CGFloat horizontalPadding = 0;
+    
+    // 检查是否在 RootViewController 中
+    BOOL isInRootVC = NO;
+    UIViewController *rootVC = self.navigationController.parentViewController;
+    if ([rootVC isKindOfClass:[RootViewController class]]) {
+        isInRootVC = YES;
+    }
     
     self.bottomButtonScrollView.frame = CGRectMake(0, safeTop, self.view.bounds.size.width, sortButtonHeight);
     [self relayoutScrollViewButtons];
@@ -378,10 +511,33 @@
                                        self.view.bounds.size.height - pathHeight - bottomSafeHeight,
                                        self.view.bounds.size.width - horizontalPadding * 2, pathHeight);
     
-    CGFloat bottomOffset = self.isBatchEditing ? (toolbarHeight + bottomSafeHeight) : bottomSafeHeight;
+    CGFloat bottomOffset = bottomSafeHeight;
+    if (self.isBatchEditing) {
+        if (isInRootVC) {
+            bottomOffset += 30; // RootViewController 中只需要一点空间
+        } else {
+            bottomOffset += toolbarHeight; // 自定义工具栏
+        }
+    }
     self.tableContainerView.frame = CGRectMake(0, safeTop + sortButtonHeight,
                                                self.view.bounds.size.width,
                                                self.view.bounds.size.height - safeTop - sortButtonHeight - statisticsHeight - pathHeight - bottomOffset);
+    
+    // 布局左侧操作面板
+    [self layoutLeftActionPanel];
+}
+
+- (void)layoutLeftActionPanel {
+    CGFloat buttonSize = 40;
+    CGFloat buttonX = 10;
+//    CGFloat safeTop = self.view.safeAreaInsets.top;
+//    CGFloat sortButtonHeight = 26;
+    CGFloat safeBottom = self.view.safeAreaInsets.bottom;
+    CGFloat pathHeight = 26;
+    CGFloat statisticsHeight = 20;
+    CGFloat buttonY = self.view.bounds.size.height - safeBottom - pathHeight - statisticsHeight - buttonSize - 20;
+    
+    self.leftActionButton.frame = CGRectMake(buttonX, buttonY, buttonSize, buttonSize);
 }
 
 - (void)relayoutScrollViewButtons {
@@ -618,50 +774,161 @@
     if (self.clipboardFileList.count == 0) {
         return;
     }
-    
-    NSString *operation = self.isCopyOperation ? @"拷贝" : @"移动";
-    NSMutableString *resultMessage = [NSMutableString string];
-    
-    for (FileModel *model in self.clipboardFileList) {
-        NSString *destinationPath = [self.currentDirPath stringByAppendingPathComponent:model.fileName];
-        NSError *error = nil;
-        BOOL success = NO;
-        
-        if (self.isCopyOperation) {
-            success = [[NSFileManager defaultManager] copyItemAtPath:model.filePath toPath:destinationPath error:&error];
-        } else {
-            success = [[NSFileManager defaultManager] moveItemAtPath:model.filePath toPath:destinationPath error:&error];
-        }
-        
-        if (success) {
-            [resultMessage appendFormat:@"%@ 成功\n", model.fileName];
-        } else {
-            [resultMessage appendFormat:@"%@ 失败: %@\n", model.fileName, error.localizedDescription];
-        }
+
+    __weak typeof(self) weakSelf = self;
+
+    if (self.isCopyOperation) {
+        [[FileActionHandler sharedHandler] copyFiles:self.clipboardFileList
+                                        toDirectory:self.currentDirPath
+                                   fromViewController:self
+                                       conflictHandler:^(FileModel *model, NSString *conflictingPath, NSString *suggestedName, void (^completion)(FileConflictOption, NSString * _Nullable)) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (strongSelf) {
+                [strongSelf showConflictAlertWithModel:model conflictingPath:conflictingPath suggestedName:suggestedName completion:completion];
+            }
+        } completion:^(NSInteger successCount, NSArray<NSString *> *successFilePaths) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (strongSelf) {
+                [strongSelf finishPasteOperationWithSuccessCount:successCount successFilePaths:successFilePaths];
+            }
+        }];
+    } else {
+        [[FileActionHandler sharedHandler] moveFiles:self.clipboardFileList
+                                        toDirectory:self.currentDirPath
+                                   fromViewController:self
+                                       conflictHandler:^(FileModel *model, NSString *conflictingPath, NSString *suggestedName, void (^completion)(FileConflictOption, NSString * _Nullable)) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (strongSelf) {
+                [strongSelf showConflictAlertWithModel:model conflictingPath:conflictingPath suggestedName:suggestedName completion:completion];
+            }
+        } completion:^(NSInteger successCount, NSArray<NSString *> *successFilePaths) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (strongSelf) {
+                [strongSelf finishPasteOperationWithSuccessCount:successCount successFilePaths:successFilePaths];
+            }
+        }];
     }
-    
-    [self showAlertWithTitle:[NSString stringWithFormat:@"%@结果", operation] message:resultMessage];
-    
+}
+
+- (void)showConflictAlertWithModel:(FileModel *)model
+                   conflictingPath:(NSString *)conflictingPath
+                      suggestedName:(NSString *)suggestedName
+                        completion:(void(^)(FileConflictOption option, NSString * _Nullable newFileName))completion {
+
+    NSString *fileName = [conflictingPath lastPathComponent];
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"文件已存在"
+                                                                   message:[NSString stringWithFormat:@"\"%@\" 已存在", fileName]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        completion(FileConflictOptionCancel, nil);
+    }]];
+
+    [alert addAction:[UIAlertAction actionWithTitle:@"覆盖" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        completion(FileConflictOptionOverwrite, nil);
+    }]];
+
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = suggestedName;
+        textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    }];
+
+    [alert addAction:[UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UITextField *textField = alert.textFields.firstObject;
+        NSString *newFileName = textField.text;
+        if (newFileName.length > 0) {
+            completion(FileConflictOptionRename, newFileName);
+        } else {
+            completion(FileConflictOptionCancel, nil);
+        }
+    }]];
+
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)finishPasteOperationWithSuccessCount:(NSInteger)successCount successFilePaths:(NSArray<NSString *> *)successFilePaths {
+    NSString *operation = self.isCopyOperation ? @"拷贝" : @"移动";
+    [self showAlertWithTitle:[NSString stringWithFormat:@"%@结果", operation]
+                     message:[NSString stringWithFormat:@"成功 %@ %ld 个文件", operation, (long)successCount]];
+
     self.clipboardFileList = nil;
     self.pasteButton.enabled = NO;
     self.pasteButton.title = @"粘贴";
     NSMutableArray *items = [self.navigationItem.rightBarButtonItems mutableCopy];
     [items removeObject:self.pasteButton];
-    self.navigationItem.rightBarButtonItems = items;
+    self.navigationItem.rightBarButtonItems = @[self.selectionModeItem,self.collectionButton];
+    
+    // 设置高亮文件路径（如果有成功的文件，取最后一个）
+    if (successFilePaths.count > 0) {
+        FileListTableViewController *currentVC = [self currentTableViewController];
+        currentVC.highlightedFilePath = successFilePaths.lastObject;
+    }
+    
     [self refreshFileList];
+    
+    // 3秒后自动取消高亮
+    if (successFilePaths.count > 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            FileListTableViewController *currentVC = [self currentTableViewController];
+//            if (currentVC.highlightedFilePath) {
+//                currentVC.highlightedFilePath = nil;
+//                [currentVC.tableView reloadData];
+//            }
+        });
+    }
 }
 
 - (void)cancelPasteButtonTapped:(UIBarButtonItem *)sender {
     self.clipboardFileList = nil;
     self.pasteButton.enabled = NO;
     self.pasteButton.title = @"粘贴";
-    
-    if (self.searchController.isActive) {
-        self.navigationItem.rightBarButtonItems = @[self.closeButton, self.searchScopeItem];
-    } else {
-        self.navigationItem.rightBarButtonItems = @[self.closeButton, self.collectionButton];
-    }
+    self.navigationItem.rightBarButtonItems = @[self.selectionModeItem, self.collectionButton];
 }
+
+- (void)actionButtonTapped:(UIBarButtonItem *)sender {
+   
+    
+    NSString *title = self.isCopyOperation ? @"粘贴操作" : @"移动操作";
+    // 1. 创建弹窗控制器（样式：UIAlertControllerStyleAlert 居中弹窗）
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:[NSString stringWithFormat:@"共%ld个文件\n是否进行次操作",self.clipboardFileList.count]
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+   
+    // 3. 添加【取消】按钮
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消"
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:nil];
+    [alert addAction:cancelAction];
+    
+    // 4. 添加【确定】按钮（点击后获取输入框内容）
+    UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:self.isCopyOperation ? @"粘贴到这里" : @"移动到这里"
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * _Nonnull action) {
+        if(self.isCopyOperation){
+            [self pasteButtonTappedFromNav:self.pasteButton];
+        }
+        
+        
+    }];
+    [alert addAction:confirmAction];
+    
+    // 4. 添加【确定】按钮（点击后获取输入框内容）
+    UIAlertAction *clearOperation = [UIAlertAction actionWithTitle:@"取消/清空操作"
+                                                            style:UIAlertActionStyleDestructive
+                                                          handler:^(UIAlertAction * _Nonnull action) {
+        
+        [self.clipboardFileList removeAllObjects];
+        self.navigationItem.rightBarButtonItems = @[self.selectionModeItem,self.collectionButton];
+        
+    }];
+    [alert addAction:clearOperation];
+    
+    // 5. 弹出显示
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 
 /// 小工具栏按钮点击
 - (void)bottomButtonTapped:(UIButton *)sender {
@@ -1062,9 +1329,13 @@
     
     [self.view setNeedsLayout];
     
+    // 检查是否在 RootViewController 中
     UIViewController *rootVC = self.navigationController.parentViewController;
     if ([rootVC isKindOfClass:[RootViewController class]]) {
         [(RootViewController *)rootVC enterEditMode];
+    } else {
+        // 如果不在 RootViewController 中，显示自定义工具栏
+        [self showEditToolbar];
     }
 }
 
@@ -1088,6 +1359,7 @@
     
     [self.view setNeedsLayout];
     
+    // 检查是否在 RootViewController 中
     UIViewController *rootVC = self.navigationController.parentViewController;
     if ([rootVC isKindOfClass:[RootViewController class]]) {
         RootViewController *vc = (RootViewController *)rootVC;
@@ -1095,6 +1367,9 @@
             vc.isEditMode = NO;
             [vc exitEditMode];
         }
+    } else {
+        // 如果不在 RootViewController 中，隐藏自定义工具栏
+        [self hideEditToolbar];
     }
 }
 
@@ -1103,6 +1378,244 @@
     if (!self.selectionCountButton) return;
     self.selectionCountButton.title = title;
     [self.rootViewController updateSelectionCount];
+    
+    // 更新自定义工具栏的数量显示
+    [self.editToolbar updateSelectedCount:[[FileSelectionManager sharedManager] selectedCount]];
+}
+
+#pragma mark - 自定义工具栏
+
+- (void)showEditToolbar {
+    if (!_editToolbar) {
+        _editToolbar = [FileOperationToolbar toolbar];
+        _editToolbar.delegate = self;
+        _editToolbar.showsDoneButton = YES;
+    }
+    [_editToolbar updateSelectedCount:[[FileSelectionManager sharedManager] selectedCount]];
+    [_editToolbar showInView:self.view animated:YES];
+}
+
+- (void)hideEditToolbar {
+    [_editToolbar hideAnimated:YES];
+}
+
+#pragma mark - FileOperationToolbarDelegate
+
+- (void)toolbar:(FileOperationToolbar *)toolbar didSelectAction:(FileOperationAction)action {
+    [self didSelectAction:action];
+}
+
+- (void)didSelectAction:(FileOperationAction)action{
+    NSArray *selectedFiles = [[FileSelectionManager sharedManager] selectedFiles];
+    
+    switch (action) {
+        case FileOperationActionCopy:
+            [self handleCopyAction:selectedFiles];
+            // 显示左侧操作面板
+            [self showLeftActionPanel];
+            break;
+        case FileOperationActionMove:
+            [self handleMoveAction:selectedFiles];
+            // 显示左侧操作面板
+            [self showLeftActionPanel];
+            break;
+        case FileOperationActionDelete:
+            [self handleDeleteAction:selectedFiles];
+            break;
+        case FileOperationActionRename:
+            [self handleRenameAction:selectedFiles];
+            break;
+        case FileOperationActionCompress:
+            [self handleCompressAction:selectedFiles];
+            break;
+        case FileOperationActionFavorite:
+            [self handleFavoriteAction:selectedFiles];
+            break;
+        case FileOperationActionRemoveFavorite:
+            [self handleRemoveFavoriteAction:selectedFiles];
+            break;
+        case FileOperationActionMore:
+            [self handleMoreAction:selectedFiles];
+            break;
+        case FileOperationActionDone:
+            [self exitBatchEditMode];
+            break;
+    }
+}
+
+- (void)handleCopyAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要拷贝的文件"];
+        return;
+    }
+    self.clipboardFileList = [files mutableCopy];
+    self.isCopyOperation = YES;
+    [self showAlertWithTitle:@"提示" message:[NSString stringWithFormat:@"已复制 %lu 个项目", (unsigned long)files.count]];
+    [self exitBatchEditMode];
+    [self updateSelectionCountButton];
+    self.title = @"已拷贝";
+    self.navigationItem.rightBarButtonItems = @[self.selectionModeItem,self.selectionCountButton];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)handleMoveAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要移动的文件"];
+        return;
+    }
+    self.clipboardFileList = [files mutableCopy];
+    self.isCopyOperation = NO;
+    [self showAlertWithTitle:@"提示" message:[NSString stringWithFormat:@"已剪切 %lu 个项目", (unsigned long)files.count]];
+    [self exitBatchEditMode];
+    [self updateSelectionCountButton];
+    self.title = @"待移动";
+    self.navigationItem.rightBarButtonItems = @[self.selectionModeItem,self.selectionCountButton];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)handleDeleteAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要删除的文件"];
+        return;
+    }
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确认删除"
+                                                                   message:[NSString stringWithFormat:@"确定要删除选中的 %lu 个项目吗？", (unsigned long)files.count]
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"彻底删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self executeDelete:files];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"删除到回收站" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self moveToRecycleBin:files];
+    }]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)executeDelete:(NSArray<FileModel *> *)files {
+   
+    
+    for (FileModel *model in files) {
+        [FileOperateTool deleteItemAtPath:model.filePath];
+    }
+    
+    [[FileSelectionManager sharedManager] clearAllSelections];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
+    
+    [self showAlertWithTitle:@"成功" message:@"删除成功"];
+    [self exitBatchEditMode];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)moveToRecycleBin:(NSArray<FileModel *> *)files {
+   
+    for (FileModel *model in files) {
+        [[RecycleBinManager sharedManager] moveToRecycleBin:model];
+    }
+    
+    [[FileSelectionManager sharedManager] clearAllSelections];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
+    
+    [self showAlertWithTitle:@"成功" message:@"已移至回收站"];
+    [self exitBatchEditMode];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)handleCompressAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要压缩的文件"];
+        return;
+    }
+    [[FileActionHandler sharedHandler] compressFilesWithInput:files destinationDir:self.currentDirPath fromViewController:self];
+    [self exitBatchEditMode];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)handleFavoriteAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要收藏的文件"];
+        return;
+    }
+    
+    for (FileModel *model in files) {
+        [[FavoriteManager sharedManager] addFavorite:model];
+    }
+    
+    [self showAlertWithTitle:@"成功" message:[NSString stringWithFormat:@"已收藏 %lu 个项目", (unsigned long)files.count]];
+    [self exitBatchEditMode];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)handleRemoveFavoriteAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要收藏的文件"];
+        return;
+    }
+    
+    for (FileModel *model in files) {
+        [[FavoriteManager sharedManager] removeFavorite:model];
+    }
+    
+    [self showAlertWithTitle:@"成功" message:[NSString stringWithFormat:@"已取消收藏 %lu 个项目", (unsigned long)files.count]];
+    [self exitBatchEditMode];
+    [self cancelPasteOperation];
+    [self hideLeftActionPanel];
+}
+
+- (void)handleMoreAction:(NSArray<FileModel *> *)files {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更多操作" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [alert addAction:[UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self handleRenameAction:files];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)handleRenameAction:(NSArray<FileModel *> *)files {
+    if (files.count == 0) {
+        [self showAlertWithTitle:@"提示" message:@"请先选择要重命名的文件"];
+        return;
+    }
+    
+    if (files.count > 1) {
+        [self showAlertWithTitle:@"提示" message:@"一次只能重命名一个文件"];
+        return;
+    }
+    
+    FileModel *model = files.firstObject;
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"重命名" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = model.fileName;
+    }];
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSString *newName = alert.textFields.firstObject.text;
+        if (newName && newName.length > 0 && ![newName isEqualToString:model.fileName]) {
+            NSString *newPath = [[model.filePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:newName];
+            NSError *error = nil;
+            if ([[NSFileManager defaultManager] moveItemAtPath:model.filePath toPath:newPath error:&error]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
+                [self showAlertWithTitle:@"成功" message:@"重命名成功"];
+                [self cancelPasteOperation];
+                [self hideLeftActionPanel];
+            } else {
+                [self showAlertWithTitle:@"失败" message:error.localizedDescription];
+            }
+        }
+    }]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)selectAllButtonTapped:(UIBarButtonItem *)sender {
@@ -1125,13 +1638,7 @@
     }
 }
 
-- (void)showAlertWithTitle:(NSString *)title message:(NSString *)message {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                   message:message
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-}
+
 
 - (void)updateStatistics {
     NSInteger folderCount = 0;

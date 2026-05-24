@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, SelectionDateRange) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor systemBackgroundColor];
-    
+    self.title = @"已选择列表";
     // 默认按最新删除排序
     _currentSortType = SelectionSortTypeTimeDesc;
     _currentDateRange = SelectionDateRangeAll;
@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger, SelectionDateRange) {
 #pragma mark - 初始化UI
 /// 设置导航栏按钮（排序、日期、清空）
 - (void)setupNavigation {
-    self.title = @"回收站";
+    self.title = @"已选择列表";
     
     UIBarButtonItem *sortButton = [[UIBarButtonItem alloc] initWithTitle:@"排序"
                                                                    style:UIBarButtonItemStylePlain

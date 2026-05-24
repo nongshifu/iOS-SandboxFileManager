@@ -7,8 +7,17 @@
 
 #import <Foundation/Foundation.h>
 #import "FileModel.h"
+#import "RecycleBinManager.h"
+@class RecycleBinItem;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef NS_ENUM(NSInteger, RecycleBinRestoreConflictOption) {
+    RecycleBinRestoreConflictOptionRename,    // 重命名恢复
+    RecycleBinRestoreConflictOptionOverwrite  // 覆盖原文件
+};
+
+typedef void(^RecycleBinRestoreConflictHandler)(RecycleBinItem *item, NSString *conflictingPath, void(^completionHandler)(RecycleBinRestoreConflictOption option));
 
 @interface RecycleBinItem : NSObject
 
@@ -64,6 +73,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param item 回收站项目
 /// @return 是否成功
 - (BOOL)restoreItem:(RecycleBinItem *)item;
+
+/// 从回收站恢复文件（带冲突处理）
+/// @param item 回收站项目
+/// @param conflictHandler 冲突处理回调，如果为 nil 则行为与 restoreItem: 相同
+/// @return 是否成功（如果是异步操作会立即返回 YES）
+- (BOOL)restoreItem:(RecycleBinItem *)item withConflictHandler:(nullable RecycleBinRestoreConflictHandler)conflictHandler;
+
+/// 检查恢复目标是否已存在
+/// @param item 回收站项目
+/// @return 冲突路径，如果返回 nil 表示没有冲突
+- (nullable NSString *)checkRestoreConflictForItem:(RecycleBinItem *)item;
 
 /// 从回收站恢复所有文件
 /// @return 恢复的数量

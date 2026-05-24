@@ -10,6 +10,8 @@
 #import "FileManagerDelegate.h"
 #import "FileEnum.h"
 #import "PlistEditorViewController.h"
+#import "FileOperationToolbar.h"
+
 
 @class FileModel;
 @class FileListTableViewController;
@@ -77,6 +79,12 @@
 /// 底部功能按钮数组（统一管理）
 @property (nonatomic, strong) NSMutableArray<UIButton *> *bottomButtons;
 
+/// 左侧操作按钮（圆形）
+@property (nonatomic, strong) UIButton *leftActionButton;
+
+/// 是否显示左侧操作按钮
+@property (nonatomic, assign) BOOL showingLeftActionButton;
+
 #pragma mark - 文件目录属性
 
 /// 当前沙盒目录类型
@@ -94,6 +102,15 @@
 
 /// 是否处于批量编辑模式
 @property (nonatomic, assign) BOOL isBatchEditing;
+
+/// 是否为文件选择器模式
+@property (nonatomic, assign) BOOL isFilePickerMode;
+
+/// 是否允许多选
+@property (nonatomic, assign) BOOL allowsMultipleSelection;
+
+/// 是否显示悬浮工具栏
+@property (nonatomic, assign) BOOL showsFloatingToolbar;
 
 /// 是否显示收藏列表
 @property (nonatomic, assign) BOOL isShowFavoriteList;
@@ -222,5 +239,9 @@
 /// @param identifier 页面标识
 /// @return 表格控制器
 - (FileListTableViewController *)tableViewControllerWithIdentifier:(NSString *)identifier;
+
+
+// 底部功能条的点击
+- (void)didSelectAction:(FileOperationAction)action;
 
 @end

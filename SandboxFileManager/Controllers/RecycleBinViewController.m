@@ -335,9 +335,27 @@ typedef NS_ENUM(NSInteger, RecycleBinDateRange) {
     
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [alert addAction:[UIAlertAction actionWithTitle:@"恢复" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        if ([[RecycleBinManager sharedManager] restoreItem:item]) {
-            [self loadDeletedFiles];
-        }
+        [[RecycleBinManager sharedManager] restoreItem:item withConflictHandler:^(RecycleBinItem *item, NSString *conflictingPath, void (^completionHandler)(RecycleBinRestoreConflictOption)) {
+            NSString *fileName = [conflictingPath lastPathComponent];
+            UIAlertController *conflictAlert = [UIAlertController alertControllerWithTitle:@"文件已存在"
+                                                                                  message:[NSString stringWithFormat:@"目标路径 \"%@\" 已存在", fileName]
+                                                                           preferredStyle:UIAlertControllerStyleAlert];
+            
+            [conflictAlert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                completionHandler(RecycleBinRestoreConflictOptionRename);
+            }]];
+            
+            [conflictAlert addAction:[UIAlertAction actionWithTitle:@"覆盖" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                completionHandler(RecycleBinRestoreConflictOptionOverwrite);
+            }]];
+            
+            [conflictAlert addAction:[UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                completionHandler(RecycleBinRestoreConflictOptionRename);
+            }]];
+            
+            [self presentViewController:conflictAlert animated:YES completion:nil];
+        }];
+        [self loadDeletedFiles];
     }]];
     
     [self presentViewController:alert animated:YES completion:nil];

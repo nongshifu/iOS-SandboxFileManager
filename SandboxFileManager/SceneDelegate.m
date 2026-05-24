@@ -7,6 +7,7 @@
 
 #import "SceneDelegate.h"
 #import "RootViewController.h"
+#import "ViewController.h"
 
 @interface SceneDelegate ()
 
@@ -22,10 +23,13 @@
     
     UIWindowScene *windowScene = (UIWindowScene *)scene;
     self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
-   
-    LGSideMenuController * sideMenuController = [[LGSideMenuController alloc] initWithRootViewController:[RootViewController rootController] leftViewController:nil rightViewController:nil];
     
-    self.window.rootViewController = sideMenuController;
+    // 使用 ViewController 作为入口（演示各种使用方式）
+    ViewController *demoVC = [[ViewController alloc] init];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:demoVC];
+    navController.navigationBar.prefersLargeTitles = NO;
+    
+    self.window.rootViewController = navController;
     
     self.window.backgroundColor = [UIColor systemBackgroundColor];
     

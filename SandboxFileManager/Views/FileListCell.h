@@ -56,6 +56,9 @@
 /// 是否处于批量编辑模式
 @property (nonatomic, assign) BOOL isBatchEditing;
 
+/// 是否高亮显示（刚操作的文件）
+@property (nonatomic, assign) BOOL isHighlightedFile;
+
 /// 单元格代理
 @property (nonatomic, assign) id<FileListCellDelegate> cellDelegate;
 
