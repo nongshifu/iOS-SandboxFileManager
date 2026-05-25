@@ -99,7 +99,7 @@
     previewVC.currentDirPath = currentDirPath;
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:previewVC];
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+//    navController.modalPresentationStyle = UIModalPresentationFullScreen;
     [viewController presentViewController:navController animated:YES completion:nil];
 }
 

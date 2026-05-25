@@ -453,7 +453,7 @@ typedef NS_ENUM(NSInteger, SelectionDateRange) {
     
     FileListViewController *fileListVC = [[FileListViewController alloc] initWithFullPath:targetPath];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:fileListVC];
-    nav.modalPresentationStyle = UIModalPresentationFullScreen;
+//    nav.modalPresentationStyle = UIModalPresentationFullScreen;
     
     UIViewController *topVC = [UIApplication sharedApplication].keyWindow.rootViewController;
     while (topVC.presentedViewController) topVC = topVC.presentedViewController;

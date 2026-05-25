@@ -1,16 +1,9 @@
 #import "FileListCell.h"
 #import <AVFoundation/AVFoundation.h>
-#import "FavoriteManager.h"
+
 
 @interface FileListCell ()
-@property (nonatomic, strong, readwrite) UIImageView *fileIconView;
-@property (nonatomic, strong, readwrite) UILabel *fileNameLabel;
-@property (nonatomic, strong, readwrite) UILabel *fileSizeLabel;
-@property (nonatomic, strong, readwrite) UILabel *detailLabel;
-@property (nonatomic, strong, readwrite) UILabel *remarkLabel;
-@property (nonatomic, strong, readwrite) UIButton *checkButton;
-@property (nonatomic, strong, readwrite) UIButton *actionButton;
-@property (nonatomic, strong) UIView *containerView;
+
 
 @end
 
@@ -114,8 +107,12 @@
     self.model = model;
     self.fileNameLabel.text = model.fileName;
    
+    // 从 FileSelectionManager 获取最新的选择状态
+    BOOL is_selected = [[FileSelectionManager sharedManager] isFileSelected:model];
+    model.isSelected = is_selected;
     
-    model.isFavorite = [[FavoriteManager sharedManager] isFavorite:self.model.filePath];
+    // 更新收藏状态
+    model.isFavorite = [[FavoriteManager sharedManager] isFavorite:model.filePath];
     
     self.fileNameLabel.textColor = model.isFavorite ? [UIColor systemOrangeColor] : [UIColor labelColor];
 
@@ -162,7 +159,8 @@
         }
     }
 
-    self.checkButton.selected = model.isSelected;
+    // 确保 checkButton 的状态与 FileSelectionManager 保持同步
+    self.checkButton.selected = is_selected;
     self.checkButton.hidden = !self.isBatchEditing;
     self.actionButton.hidden = self.isBatchEditing;
     
@@ -268,11 +266,21 @@
 }
 
 - (void)checkButtonTapped:(UIButton *)sender {
-    sender.selected = !sender.selected;
-    self.model.isSelected = sender.selected;
+    // 更新选择状态到 FileSelectionManager
+    BOOL shouldSelect = !sender.selected;
+    if (shouldSelect) {
+        [[FileSelectionManager sharedManager] addFile:self.model];
+    } else {
+        [[FileSelectionManager sharedManager] removeFile:self.model];
+    }
+    
+    // 更新 UI 和 model
+    sender.selected = shouldSelect;
+    self.model.isSelected = shouldSelect;
 
+    // 通知 delegate
     if ([self.cellDelegate respondsToSelector:@selector(fileListCell:didSelectCheckBox:forFileModel:)]) {
-        [self.cellDelegate fileListCell:self didSelectCheckBox:sender.selected forFileModel:self.model];
+        [self.cellDelegate fileListCell:self didSelectCheckBox:shouldSelect forFileModel:self.model];
     }
 }
 

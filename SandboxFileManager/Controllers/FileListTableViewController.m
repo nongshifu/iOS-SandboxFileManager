@@ -20,6 +20,9 @@
 #import "FileOpener.h"
 #import "WindowManager.h"
 
+#undef MY_NSLog_ENABLED // .M取消 PCH 中的全局宏定义
+#define MY_NSLog_ENABLED YES // .M当前文件单独启用
+
 static NSString * const kCellIdentifier = @"FileListCell";
 
 @interface FileListTableViewController ()
@@ -324,8 +327,10 @@ static NSString * const kCellIdentifier = @"FileListCell";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FileListCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
-    
+//    FileListCell *cell = [tableView dequeueReusableCellWithIdentifier:[NSString stringWithFormat:@"kCellIdentifier-%ld",indexPath.row] forIndexPath:indexPath];
+    // 每次都新建自定义cell，不重用
+    FileListCell *cell = [[FileListCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:[NSString stringWithFormat:@"kCellIdentifier-%ld",indexPath.row]];
+        
     FileModel *model = nil;
     if (self.isShowingSearchResults) {
         model = self.searchResults[indexPath.row];
@@ -372,14 +377,26 @@ static NSString * const kCellIdentifier = @"FileListCell";
     }
     
     if (self.isBatchEditing) {
-        if ([[FileSelectionManager sharedManager] isFileSelected:model]) {
+        // 更新选择状态
+        BOOL is_selected = [[FileSelectionManager sharedManager] isFileSelected:model];
+        if (is_selected) {
             [[FileSelectionManager sharedManager] removeFile:model];
         } else {
             [[FileSelectionManager sharedManager] addFile:model];
         }
+        
+        // 更新 model 的选中状态
+        model.isSelected = !is_selected;
+        
+        // 更新按钮状态
+        [self.fileListViewController updateSelectionCountButton];
+        
+        // 直接更新当前 cell 的 checkButton，不刷新
+        FileListCell *cell = (FileListCell*)[tableView cellForRowAtIndexPath:indexPath];
+        cell.checkButton.selected = model.isSelected;
+        
         [tableView reloadData];
         
-        [self.fileListViewController updateSelectionCountButton];
     } else {
         if (model.itemType == FileItemTypeFolder) {
             
@@ -577,6 +594,12 @@ static NSString * const kCellIdentifier = @"FileListCell";
 
 
 #pragma mark - FileListCellDelegate
+
+// 文件列表单元格点击了选择框
+- (void)fileListCell:(FileListCell *)cell didSelectCheckBox:(BOOL)selected forFileModel:(FileModel *)model {
+    // 更新按钮状态
+    [self.fileListViewController updateSelectionCountButton];
+}
 
 // 文件列表单元格点击了操作按钮 - 触发左滑效果
 - (void)fileListCell:(FileListCell *)cell didTapActionButtonForFileModel:(FileModel *)model {
