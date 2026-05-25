@@ -1,6 +1,6 @@
 #import "SandboxTool.h"
 #import "FileModel.h"
-#import "SSZipArchive.h"
+#import <SSZipArchive/SSZipArchive.h>
 
 @implementation SandboxTool
 
@@ -69,6 +69,10 @@
     }
 
     return [fileModels copy];
+}
+
++ (NSArray<FileModel *> *)getFileListAtPath:(NSString *)dirPath displayType:(DisplayType)displayType{
+    return [self getFirstLevelFileModelsWithDirPath:dirPath displayType:displayType];
 }
 
 + (BOOL)isDirectoryAtPath:(NSString *)path {

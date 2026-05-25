@@ -6,8 +6,8 @@
 //
 
 #import "FileOpener.h"
-#import "PlistEditorViewController.h"
 #import "FilePreviewViewController.h"
+#import "PlistEditorViewController.h"
 #import "FileEnum.h"
 
 @interface FileOpener ()

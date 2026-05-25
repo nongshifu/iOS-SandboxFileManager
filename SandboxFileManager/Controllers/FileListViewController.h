@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "FileManagerDelegate.h"
 #import "FileEnum.h"
-#import "PlistEditorViewController.h"
 #import "FileOperationToolbar.h"
 
 
@@ -84,6 +83,15 @@
 
 /// 是否显示左侧操作按钮
 @property (nonatomic, assign) BOOL showingLeftActionButton;
+
+/// 上一级目录截图显示视图（用于右滑返回动画）
+@property (nonatomic, strong) UIImageView *parentSnapshotView;
+
+/// 是否正在进行滑动返回操作
+@property (nonatomic, assign) BOOL isSlidingBack;
+
+/// 临时文件列表（用于生成上层目录截图）
+@property (nonatomic, strong) NSMutableArray *tempSnapshotFiles;
 
 #pragma mark - 文件目录属性
 

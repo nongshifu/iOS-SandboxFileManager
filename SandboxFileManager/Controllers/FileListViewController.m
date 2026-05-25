@@ -18,7 +18,6 @@
 #import "RemarkManager.h"
 #import "FavoriteListViewController.h"
 #import "FilePreviewViewController.h"
-#import "PlistEditorVC.h"
 #import "FileSelectionManager.h"
 #import "RootViewController.h"
 #import "HistoryManager.h"
@@ -342,9 +341,17 @@
 }
 
 - (void)setupSwipeGesture {
-    UISwipeGestureRecognizer *rightSwipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleRightSwipeGesture:)];
-    rightSwipeGesture.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:rightSwipeGesture];
+    // 使用 UIPanGestureRecognizer 替代 UISwipeGestureRecognizer，实现跟随手指滑动
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
+    panGesture.delegate = self;
+    [self.view addGestureRecognizer:panGesture];
+    
+    // 创建上一级目录截图显示视图 - 尺寸与 tableContainerView 相同
+    self.parentSnapshotView = [[UIImageView alloc] init];
+    self.parentSnapshotView.contentMode = UIViewContentModeScaleToFill;
+    self.parentSnapshotView.clipsToBounds = YES;
+    self.parentSnapshotView.hidden = YES;
+    [self.view insertSubview:self.parentSnapshotView belowSubview:self.tableContainerView];
 }
 
 - (void)setupLeftActionPanel {
@@ -373,8 +380,9 @@
 }
 
 - (void)leftActionButtonTapped:(UIButton *)sender {
+    NSInteger selectedCount = [[FileSelectionManager sharedManager] selectedCount];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"请选择"
-                                                                   message:nil
+                                                                   message:[NSString stringWithFormat:@"共选择（%ld）个文件",selectedCount]
                                                             preferredStyle:UIAlertControllerStyleActionSheet];
     // 移动拷贝
     if(self.isCopyOperation){
@@ -415,7 +423,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"清空选择数据" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [[FileSelectionManager sharedManager] clearAllSelections];
         [self cancelPasteOperation];
-        [self hideLeftActionPanel];
+        [self showLeftActionPanel];
     }]];
     
     // 取消
@@ -443,31 +451,16 @@
 
 
 - (void)showLeftActionPanel {
-    if (_showingLeftActionButton) {
-        return;
-    }
     
-    _showingLeftActionButton = YES;
-    self.leftActionButton.hidden = NO;
+    NSInteger selectedCount = [[FileSelectionManager sharedManager] selectedCount];
+    _showingLeftActionButton = selectedCount > 0;
+    self.leftActionButton.hidden = selectedCount == 0;
     
     [UIView animateWithDuration:0.3 animations:^{
-        self.leftActionButton.alpha = 1;
+        self.leftActionButton.alpha = selectedCount > 0;
     }];
 }
 
-- (void)hideLeftActionPanel {
-    if (!_showingLeftActionButton) {
-        return;
-    }
-    
-    _showingLeftActionButton = NO;
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        self.leftActionButton.alpha = 0;
-    } completion:^(BOOL finished) {
-        self.leftActionButton.hidden = YES;
-    }];
-}
 
 - (void)setupNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -706,15 +699,18 @@
         return;
     }
     
-    // 获取要截图的视图 - 只截 tableContainerView（不包括导航和底部工具栏）
-    UIView *viewToSnapshot = self.tableContainerView;
-    if (viewToSnapshot == nil) {
+    // 获取当前表格控制器
+    FileListTableViewController *currentVC = [self currentTableViewController];
+    if (!currentVC || !currentVC.tableView) {
         return;
     }
     
+    // 只截取表格视图（UITableView）
+    UITableView *tableView = currentVC.tableView;
+    
     // 截图
-    UIGraphicsBeginImageContextWithOptions(viewToSnapshot.bounds.size, NO, 0.0);
-    [viewToSnapshot drawViewHierarchyInRect:viewToSnapshot.bounds afterScreenUpdates:YES];
+    UIGraphicsBeginImageContextWithOptions(tableView.bounds.size, NO, 0.0);
+    [tableView drawViewHierarchyInRect:tableView.bounds afterScreenUpdates:YES];
     UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -1301,18 +1297,241 @@
     }
 }
 
-- (void)handleRightSwipeGesture:(UISwipeGestureRecognizer *)gesture {
-    if (gesture.state == UIGestureRecognizerStateRecognized) {
-        NSString *documentsPath = [SandboxTool getSandboxDirectoryPath:SandboxDirectoryTypeDocuments];
-        NSString *rootPath = [documentsPath stringByDeletingLastPathComponent];
-        
-        if ([self.currentDirPath isEqualToString:rootPath] || self.isShowFavoriteList || self.searchController.isActive) {
-            return;
+// 长按 右滑
+- (void)handlePanGesture:(UIPanGestureRecognizer *)gesture {
+    // 获取手势状态
+    UIGestureRecognizerState state = gesture.state;
+    CGPoint translation = [gesture translationInView:self.view];
+    
+    // 只处理向右滑动
+    if (translation.x < 0) {
+        return;
+    }
+    
+    // 检查是否可以返回
+    NSString *documentsPath = [SandboxTool getSandboxDirectoryPath:SandboxDirectoryTypeDocuments];
+    NSString *rootPath = [documentsPath stringByDeletingLastPathComponent];
+    if ([self.currentDirPath isEqualToString:rootPath] || self.isShowFavoriteList || self.searchController.isActive) {
+        return;
+    }
+    
+    CGFloat screenWidth = self.view.bounds.size.width;
+    CGFloat maxOffset = screenWidth * 0.6; // 最大滑动距离为屏幕宽度的60%
+    CGFloat currentOffset = MIN(translation.x, maxOffset);
+    
+    switch (state) {
+        case UIGestureRecognizerStateBegan: {
+            // 手势开始，显示上一级目录截图
+            self.isSlidingBack = YES;
+            [self loadParentSnapshot];
+            self.parentSnapshotView.hidden = NO;
+            break;
         }
-        
+        case UIGestureRecognizerStateChanged: {
+            // 更新滑动位置
+            [self updateSlideOffset:currentOffset];
+            break;
+        }
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateCancelled: {
+            // 手势结束，判断是否触发返回
+            [self finishSlideWithOffset:currentOffset];
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)loadParentSnapshot {
+    // 获取上一级目录路径
+    NSString *parentPath = [self.currentDirPath stringByDeletingLastPathComponent];
+    
+    // 设置截图视图尺寸与 tableContainerView 相同
+    CGRect frame = self.tableContainerView.frame;
+    self.parentSnapshotView.frame = frame;
+    
+    // 首先尝试从 WindowManager 获取上一级目录的截图
+    FileListViewController *parentWindow = nil;
+    for (FileListViewController *windowVC in [[WindowManager sharedManager] allWindows]) {
+        if ([windowVC.currentDirPath isEqualToString:parentPath]) {
+            parentWindow = windowVC;
+            break;
+        }
+    }
+    
+    if (parentWindow && parentWindow.windowSnapshot) {
+        self.parentSnapshotView.image = parentWindow.windowSnapshot;
+    } else {
+        // 如果没有截图，动态生成上层目录的截图
+        UIImage *parentSnapshot = [self generateSnapshotForPath:parentPath];
+        if (parentSnapshot) {
+            self.parentSnapshotView.image = parentSnapshot;
+        } else {
+            // 如果无法生成截图，使用默认背景色
+            self.parentSnapshotView.image = nil;
+            self.parentSnapshotView.backgroundColor = [UIColor systemBackgroundColor];
+        }
+    }
+}
+
+- (UIImage *)generateSnapshotForPath:(NSString *)path {
+    // 创建临时表格视图来显示上层目录内容
+    UITableView *tempTableView = [[UITableView alloc] initWithFrame:self.tableContainerView.bounds style:UITableViewStylePlain];
+    tempTableView.backgroundColor = [UIColor systemBackgroundColor];
+    
+    // 加载上层目录的文件列表
+    NSArray *files = [SandboxTool getFileListAtPath:path displayType:DisplayTypeAll];
+    
+    // 如果文件列表为空，返回空截图
+    if (!files || files.count == 0) {
+        UIGraphicsBeginImageContextWithOptions(tempTableView.bounds.size, NO, 0.0);
+        [[UIColor systemBackgroundColor] setFill];
+        UIRectFill(tempTableView.bounds);
+        UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return snapshot;
+    }
+    
+    // 设置表格数据源
+    tempTableView.dataSource = self;
+    tempTableView.delegate = self;
+    [tempTableView registerClass:[FileListCell class] forCellReuseIdentifier:@"TempCell"];
+    
+    // 临时存储文件列表用于截图
+    self.tempSnapshotFiles = [files mutableCopy];
+    
+    // 强制刷新表格
+    [tempTableView reloadData];
+    
+    // 截图
+    UIGraphicsBeginImageContextWithOptions(tempTableView.bounds.size, NO, 0.0);
+    [tempTableView drawViewHierarchyInRect:tempTableView.bounds afterScreenUpdates:YES];
+    UIImage *snapshot = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // 清理临时数据
+    self.tempSnapshotFiles = nil;
+    
+    return snapshot;
+}
+
+#pragma mark - UITableViewDataSource (for snapshot)
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.tempSnapshotFiles) {
+        return self.tempSnapshotFiles.count;
+    }
+    return 0;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    FileListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TempCell" forIndexPath:indexPath];
+    
+    if (self.tempSnapshotFiles && indexPath.row < self.tempSnapshotFiles.count) {
+        FileModel *model = self.tempSnapshotFiles[indexPath.row];
+        cell.model = model;
+    }
+    
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate (for snapshot)
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60; // 与 FileListCell 一致
+}
+
+- (void)updateSlideOffset:(CGFloat)offset {
+    CGFloat screenWidth = self.view.bounds.size.width;
+    CGFloat progress = offset / (screenWidth * 0.6);
+    
+    // 更新表格容器视图位置（向右滑动）
+    self.tableContainerView.transform = CGAffineTransformMakeTranslation(offset, 0);
+    
+    // 更新上一级截图视图位置（从左侧滑入）
+    self.parentSnapshotView.transform = CGAffineTransformMakeTranslation(offset - screenWidth, 0);
+    
+    // 添加缩放效果
+    CGFloat scale = 1.0 - progress * 0.05;
+    self.tableContainerView.transform = CGAffineTransformScale(self.tableContainerView.transform, scale, scale);
+    
+    // 添加透明度变化
+    self.tableContainerView.alpha = 1.0 - progress * 0.9;
+    
+    // 添加阴影效果
+    self.tableContainerView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.tableContainerView.layer.shadowOffset = CGSizeMake(-5, 0);
+    self.tableContainerView.layer.shadowOpacity = progress * 0.5;
+    self.tableContainerView.layer.shadowRadius = 10;
+}
+
+- (void)finishSlideWithOffset:(CGFloat)offset {
+    CGFloat screenWidth = self.view.bounds.size.width;
+    CGFloat threshold = screenWidth * 0.3; // 超过30%屏幕宽度触发返回
+    
+    if (offset >= threshold) {
+        // 触发返回上一级目录
+        [self animateToParentDirectory];
+    } else {
+        // 滚回原位
+        [self animateBackToOriginalPosition];
+    }
+}
+
+- (void)animateToParentDirectory {
+    CGFloat screenWidth = self.view.bounds.size.width;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.tableContainerView.transform = CGAffineTransformMakeTranslation(screenWidth, 0);
+        self.tableContainerView.alpha = 0;
+        self.parentSnapshotView.transform = CGAffineTransformMakeTranslation(0, 0);
+    } completion:^(BOOL finished) {
+        // 执行实际的目录切换
         NSString *parentPath = [self.currentDirPath stringByDeletingLastPathComponent];
         [self navigateToDirectory:parentPath];
+        
+        // 重置视图状态
+        [self resetSlideViews];
+    }];
+}
+
+- (void)animateBackToOriginalPosition {
+    [UIView animateWithDuration:0.3 animations:^{
+        [self resetSlideViews];
+    }];
+}
+
+- (void)resetSlideViews {
+    self.tableContainerView.transform = CGAffineTransformIdentity;
+    self.tableContainerView.alpha = 1.0;
+    self.tableContainerView.layer.shadowOpacity = 0;
+    
+    self.parentSnapshotView.transform = CGAffineTransformIdentity;
+    self.parentSnapshotView.hidden = YES;
+    
+    self.isSlidingBack = NO;
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    // 如果是滑动返回操作，允许手势开始
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
+        CGPoint velocity = [pan velocityInView:self.view];
+        
+        // 只允许向右滑动
+        if (velocity.x > 0) {
+            // 检查是否在根目录
+            NSString *documentsPath = [SandboxTool getSandboxDirectoryPath:SandboxDirectoryTypeDocuments];
+            NSString *rootPath = [documentsPath stringByDeletingLastPathComponent];
+            if (![self.currentDirPath isEqualToString:rootPath] && !self.isShowFavoriteList && !self.searchController.isActive) {
+                return YES;
+            }
+        }
     }
+    return NO;
 }
 
 - (void)enterBatchEditMode {
@@ -1371,6 +1590,7 @@
         // 如果不在 RootViewController 中，隐藏自定义工具栏
         [self hideEditToolbar];
     }
+    [self showLeftActionPanel];
 }
 
 - (void)updateSelectionCountButton {
@@ -1456,7 +1676,7 @@
     self.title = @"已拷贝";
     self.navigationItem.rightBarButtonItems = @[self.selectionModeItem,self.selectionCountButton];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)handleMoveAction:(NSArray<FileModel *> *)files {
@@ -1472,7 +1692,7 @@
     self.title = @"待移动";
     self.navigationItem.rightBarButtonItems = @[self.selectionModeItem,self.selectionCountButton];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)handleDeleteAction:(NSArray<FileModel *> *)files {
@@ -1507,7 +1727,7 @@
     [self showAlertWithTitle:@"成功" message:@"删除成功"];
     [self exitBatchEditMode];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)moveToRecycleBin:(NSArray<FileModel *> *)files {
@@ -1522,7 +1742,7 @@
     [self showAlertWithTitle:@"成功" message:@"已移至回收站"];
     [self exitBatchEditMode];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)handleCompressAction:(NSArray<FileModel *> *)files {
@@ -1533,7 +1753,7 @@
     [[FileActionHandler sharedHandler] compressFilesWithInput:files destinationDir:self.currentDirPath fromViewController:self];
     [self exitBatchEditMode];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)handleFavoriteAction:(NSArray<FileModel *> *)files {
@@ -1549,7 +1769,7 @@
     [self showAlertWithTitle:@"成功" message:[NSString stringWithFormat:@"已收藏 %lu 个项目", (unsigned long)files.count]];
     [self exitBatchEditMode];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)handleRemoveFavoriteAction:(NSArray<FileModel *> *)files {
@@ -1565,7 +1785,7 @@
     [self showAlertWithTitle:@"成功" message:[NSString stringWithFormat:@"已取消收藏 %lu 个项目", (unsigned long)files.count]];
     [self exitBatchEditMode];
     [self cancelPasteOperation];
-    [self hideLeftActionPanel];
+    
 }
 
 - (void)handleMoreAction:(NSArray<FileModel *> *)files {
@@ -1578,6 +1798,8 @@
 }
 
 - (void)handleRenameAction:(NSArray<FileModel *> *)files {
+    [self showLeftActionPanel];
+    
     if (files.count == 0) {
         [self showAlertWithTitle:@"提示" message:@"请先选择要重命名的文件"];
         return;
@@ -1603,7 +1825,7 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationFileListChanged object:nil];
                 [self showAlertWithTitle:@"成功" message:@"重命名成功"];
                 [self cancelPasteOperation];
-                [self hideLeftActionPanel];
+                
             } else {
                 [self showAlertWithTitle:@"失败" message:error.localizedDescription];
             }

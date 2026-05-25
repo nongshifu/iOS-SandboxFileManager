@@ -9,7 +9,7 @@
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <AVKit/AVKit.h>
 #import <AVFoundation/AVFoundation.h>
-#import "SSZipArchive.h"
+#import <SSZipArchive/SSZipArchive.h>
 
 @interface FileActionHandler () <UIDocumentInteractionControllerDelegate, SSZipArchiveDelegate>
 

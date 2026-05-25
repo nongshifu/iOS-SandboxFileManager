@@ -103,7 +103,7 @@ static NSString * const kFavoriteCellIdentifier = @"FavoriteCell";
         [self dismissViewControllerAnimated:YES completion:^{
             FileListViewController *fileListVC = [[FileListViewController alloc] initWithFullPath:homePath];
             UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:fileListVC];
-            navController.modalPresentationStyle = UIModalPresentationFullScreen;
+//            navController.modalPresentationStyle = UIModalPresentationFullScreen;
             UIViewController *presenter = [UIApplication sharedApplication].keyWindow.rootViewController;
             while (presenter.presentedViewController) {
                 presenter = presenter.presentedViewController;

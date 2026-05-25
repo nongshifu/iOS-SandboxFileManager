@@ -191,11 +191,14 @@ static NSString * const kCellIdentifier = @"FileListCell";
 - (void)reloadData {
     [self.tableView reloadData];
     [self updateEmptyView];
-    // 动画完成后，延迟一点时间再截图
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    // 刷新完成后执行
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // 👉 这里就是 reloadData 完全结束的时机
+        NSLog(@"表格刷新完成！");
         [self.fileListViewController takeWindowSnapshot];
-        [[WindowManager sharedManager] saveWindowState];
+        // 可以安全获取 cell、滚动、更新UI等
     });
+    
 }
 
 - (void)updateEmptyView {
@@ -294,7 +297,7 @@ static NSString * const kCellIdentifier = @"FileListCell";
                 model = self.fileList[indexPath.row];
             }
             
-            [self showMoreOptionsForModel:model];
+            [self.fileListViewController enterBatchEditMode];
         }
     }
 }
@@ -638,50 +641,6 @@ static NSString * const kCellIdentifier = @"FileListCell";
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-
-// 显示更多操作弹窗
-- (void)showMoreOptionsForModel:(FileModel *)model {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    // 收藏/取消收藏
-    NSString *favoriteTitle = model.isFavorite ? @"取消收藏" : @"收藏";
-    [alert addAction:[UIAlertAction actionWithTitle:favoriteTitle
-                                              style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self toggleFavoriteForItem:model];
-    }]];
-    
-    // 重命名
-    [alert addAction:[UIAlertAction actionWithTitle:@"重命名"
-                                              style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self showRenameAlertForItem:model];
-    }]];
-    
-    // 删除
-    [alert addAction:[UIAlertAction actionWithTitle:@"删除"
-                                              style:UIAlertActionStyleDestructive
-                                            handler:^(UIAlertAction * _Nonnull action) {
-        [self confirmDeleteItem:model];
-    }]];
-    
-    // 取消
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消"
-                                              style:UIAlertActionStyleCancel
-                                            handler:nil]];
-    
-    // 适配 iPad
-    UIPopoverPresentationController *popController = alert.popoverPresentationController;
-    if (popController) {
-        popController.sourceView = self.view;
-        popController.sourceRect = CGRectMake(self.view.bounds.size.width / 2, self.view.bounds.size.height / 2, 1, 1);
-        popController.permittedArrowDirections = UIPopoverArrowDirectionAny;
-    }
-    
-    [self presentViewController:alert animated:YES completion:nil];
-}
 
 #pragma mark - 辅助函数
 // 显示警告提示框
